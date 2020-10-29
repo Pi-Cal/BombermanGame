@@ -11,13 +11,16 @@ import uet.oop.bomberman.graphics.Sprite;
 
 import javax.naming.ldap.Control;
 import java.util.List;
+import java.util.Map;
 
 public class Bomber extends Entity {
 
     private int time = 0;
-    private double speed = 120.0 * 16;
+    private int iMap;
+    private int jMap;
+    private double speed = 120.0 * 8;
     private boolean[] side = {false, false, false, false};
-    private final byte trai = 0, phai = 1, tren = 2, duoi = 3;
+    private final byte left = 0, right = 1, up = 2, down = 3;
 
     private void setFalse() {
         for (int i = 0; i < 4; i++) {
@@ -25,6 +28,10 @@ public class Bomber extends Entity {
         }
     }
 
+    private boolean isMoving() {
+        return ((int)Math.round(position.x)) % Sprite.SCALED_SIZE != 0 ||
+                ((int)Math.round(position.y)) % Sprite.SCALED_SIZE != 0;
+    }
     public Vector velocity = new Vector(0, 0);
 
     public Bomber(Vector position, Image img) {
@@ -43,7 +50,9 @@ public class Bomber extends Entity {
 
     @Override
     public void update() {
-        if (BombermanGame.inputLists.contains("LEFT")) {
+        jMap = (int) Math.round(position.x / Sprite.SCALED_SIZE);
+        iMap = (int) Math.round(position.y / Sprite.SCALED_SIZE);
+        if (BombermanGame.inputLists.contains("LEFT") && side[left]) {
             this.velocity.add(-speed,0);
             switch (time % 3) {
                 case 0:
@@ -55,13 +64,9 @@ public class Bomber extends Entity {
                 default:
                     img = Sprite.player_left_2.getFxImage();
             }
-            if (/*position.x <= Sprite.SCALED_SIZE || */side[phai]) {
-                this.velocity.add(speed,0);
-                side[phai] = false;
-            }
             time++;
         }
-        if (BombermanGame.inputLists.contains("RIGHT")) {
+        if (BombermanGame.inputLists.contains("RIGHT") && side[right]) {
             this.velocity.add(speed, 0);
             switch (time % 3) {
                 case 0:
@@ -73,13 +78,9 @@ public class Bomber extends Entity {
                 default:
                     img = Sprite.player_right_2.getFxImage();
             }
-            if (/*position.x >= (BombermanGame.WIDTH - 2) * Sprite.SCALED_SIZE || */side[trai]) {
-                this.velocity.add(-speed,0);
-                side[trai] = false;
-            }
             time++;
         }
-        if (BombermanGame.inputLists.contains("UP")) {
+        if (BombermanGame.inputLists.contains("UP") && side[up]) {
             this.velocity.add(0, -speed);
             switch (time % 3) {
                 case 0:
@@ -91,13 +92,9 @@ public class Bomber extends Entity {
                 default:
                     img = Sprite.player_up_2.getFxImage();
             }
-            if (/*position.y <= Sprite.SCALED_SIZE || */side[duoi]) {
-                this.velocity.add(0,speed);
-                side[duoi] = false;
-            }
             time++;
         }
-        if (BombermanGame.inputLists.contains("DOWN")) {
+        if (BombermanGame.inputLists.contains("DOWN") && side[down]) {
             this.velocity.add(0, speed);
             switch (time % 3) {
                 case 0:
@@ -109,48 +106,52 @@ public class Bomber extends Entity {
                 default:
                     img = Sprite.player_down_2.getFxImage();
             }
-            if (/*position.y >= (BombermanGame.HEIGHT - 2) * Sprite.SCALED_SIZE || */side[tren]) {
-                this.velocity.add(0,-speed);
-                side[tren] = false;
-            }
             time++;
         }
 
         velocity.multiply( 1/120.0);
         position.add(this.getVelocity());
+
     }
 
-    public void handleCollision(List<Entity> entities) {
-        for (Entity entity : entities) {
-            if (handle_1_Collision(entity) && (entity instanceof Wall)) {
-                setFalse();
-                if (Math.round(position.x) + 0.999999 == Math.round(entity.position.x)) /*&&
-                        Math.round(position.y) > Math.round(entity.position.y - getHeight()) &&
-                        Math.round(position.y) < Math.round(entity.position.y + entity.getHeight() + getHeight()))*/ {
-                    System.out.println("trai");
-                    side[trai] = true;
-                } else if (Math.round(position.x) == Math.round(entity.position.x) + 0.999999) /*&&
-                        /*Math.round(position.y) > Math.round(entity.position.y - getHeight()) &&
-                        Math.round(position.y) < Math.round(entity.position.y + entity.getHeight() + getHeight()))*/ {
-                    System.out.println("phai");
-                    side[phai] = true;
-                } else if (Math.round(position.y) + 0.999999 == Math.round(entity.position.y)) /*&&
-                        Math.round(position.x) > Math.round(entity.position.x - getWidth()) &&
-                        Math.round(position.x) < Math.round(entity.position.x + entity.getWidth() + getWidth()))*/ {
-                    System.out.println("tren");
-                    side[tren] = true;
-                } else if (Math.round(position.y) == Math.round(entity.position.y) + 0.999999) /*&&
-                        Math.round(position.x) > Math.round(entity.position.x - getWidth()) &&
-                        Math.round(position.x) < Math.round(entity.position.x + entity.getWidth() + getWidth()))*/ {
-                    System.out.println("duoi");
-                    side[duoi] = true;
-                }
-                velocity.multiply( 1/120.0);
-                position.add(velocity);
-                System.out.println("Va vao tuong!!" + time);
-                break;
-            }
+    public void handleCollision(Map<Vector, Entity> t) {
+        System.out.println(iMap + " " + jMap);
+        setFalse();
+        if (isMoving()) {
+            jMap = (int) Math.round(position.x / Sprite.SCALED_SIZE) - 1;
+            iMap = (int) Math.round(position.y / Sprite.SCALED_SIZE);
         }
+        if (BombermanGame.map[iMap][jMap + 1] == ' ') {
+            side[right] = true;
+        }
+
+
+        if (isMoving()) {
+            jMap = (int) Math.round(position.x / Sprite.SCALED_SIZE);
+            iMap = (int) Math.round(position.y / Sprite.SCALED_SIZE) - 1;
+        }
+        if (BombermanGame.map[iMap + 1][jMap] == ' ') {
+            side[down] = true;
+        }
+
+        if (isMoving()) {
+            jMap = (int) Math.round(position.x / Sprite.SCALED_SIZE);
+            iMap = (int) Math.round(position.y / Sprite.SCALED_SIZE) + 1;
+        }
+        if (BombermanGame.map[iMap - 1][jMap] == ' ') {
+            side[up] = true;
+        }
+
+        if (isMoving()) {
+            jMap = (int) Math.round(position.x / Sprite.SCALED_SIZE) + 1;
+            iMap = (int) Math.round(position.y / Sprite.SCALED_SIZE);
+        }
+        if (BombermanGame.map[iMap][jMap - 1] == ' ') {
+            side[left] = true;
+        }
+
+        
+
     }
 
 }

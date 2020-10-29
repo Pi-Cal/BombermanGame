@@ -11,26 +11,27 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import uet.oop.bomberman.Character.Vector;
-import uet.oop.bomberman.entities.Bomber;
-import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.Grass;
-import uet.oop.bomberman.entities.Wall;
+import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URL;
+
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class BombermanGame extends Application {
     
-    public static final int WIDTH = 20;
-    public static final int HEIGHT = 10;
+    public static int WIDTH = 20;
+    public static int HEIGHT = 10;
     
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
-    private List<Entity> stillObjects = new ArrayList<>();
+    private Map<Vector, Entity> stillObjects = new HashMap<Vector, Entity>();
     public static ArrayList<String> inputLists = new ArrayList<>();
+    public static char[][] map;
     Bomber bomberman;
 
 
@@ -41,6 +42,7 @@ public class BombermanGame extends Application {
     @Override
     public void start(Stage stage) {
         // Tao Canvas
+        createMap("levels/Level2.txt");
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         gc = canvas.getGraphicsContext2D();
 
@@ -84,9 +86,6 @@ public class BombermanGame extends Application {
         };
 
         timer.start();
-        createMap();
-        Wall wall = new Wall(new Vector(5,3), Sprite.wall.getFxImage());
-        stillObjects.add(wall);
 
         entities.add(bomberman);
     }
@@ -95,18 +94,42 @@ public class BombermanGame extends Application {
         bomberman.handleCollision(stillObjects);
     }
 
-    public void createMap() {
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
-                Entity object;
-                if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1) {
-                    object = new Wall(new Vector(i,j), Sprite.wall.getFxImage());
+    public void createMap(String filePath) {
+        try {
+            ClassLoader cl = getClass().getClassLoader();
+            File myObj = new File(cl.getResource(filePath).getFile());
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                int level = myReader.nextInt();
+                HEIGHT = myReader.nextInt();
+                WIDTH = myReader.nextInt();
+                map = new char[HEIGHT][WIDTH];
+                String row = myReader.nextLine();
+                for (int i = 0; i < HEIGHT; i++ ) {
+                    row = myReader.nextLine();
+                    for (int j = 0; j < WIDTH; j++) {
+                        map[i][j] = row.charAt(j);
+                        switch (map[i][j]) {
+                            case '#' :
+                                Wall wall = new Wall(new Vector(j, i), Sprite.wall.getFxImage());
+                                stillObjects.put(wall.getPosition(), wall);
+                                break;
+                            case '*' :
+                                Brick brick = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
+                                stillObjects.put(brick.getPosition(), brick);
+                                break;
+                            default:
+                                Grass grass = new Grass(new Vector(j, i), Sprite.grass.getFxImage());
+                                stillObjects.put(grass.getPosition(), grass);
+                        }
+                    }
                 }
-                else {
-                    object = new Grass(new Vector(i,j), Sprite.grass.getFxImage());
-                }
-                stillObjects.add(object);
+
             }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
         }
     }
 
@@ -116,7 +139,9 @@ public class BombermanGame extends Application {
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        stillObjects.forEach(g -> g.render(gc));
+        for (Map.Entry<Vector, Entity> entry : stillObjects.entrySet()) {
+            entry.getValue().render(gc);
+        }
         entities.forEach(g -> g.render(gc));
     }
 }
