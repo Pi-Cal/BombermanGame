@@ -9,11 +9,13 @@ import javafx.scene.paint.Color;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.Character.Vector;
 
+import java.awt.*;
+
 public abstract class Entity {
     public Vector position = new Vector(0,0);
     protected Image img;
-    private double width = 32;
-    private double height = 32;
+    private double width = 1;
+    private double height = 1;
 
     public double getWidth() {
         return width;
@@ -50,8 +52,8 @@ public abstract class Entity {
     public Entity(Vector p, Image img) {
         this.position.setVector(p.x * Sprite.SCALED_SIZE, p.y * Sprite.SCALED_SIZE);
         this.img = img;
-        this.width = img.getWidth();
-        this.height = img.getHeight();
+        this.width = img.getWidth() / Sprite.SCALED_SIZE;
+        this.height = img.getHeight() / Sprite.SCALED_SIZE;
     }
 
     public void render(GraphicsContext gc) {
@@ -67,9 +69,9 @@ public abstract class Entity {
     public abstract void update();
 
     public boolean handle_1_Collision(Entity other) {
-        return (Math.round(position.x + width) >= Math.round(other.position.x) &&
-                Math.round(position.x) <= Math.round(other.position.x + width) &&
-                Math.round(position.y + height) >= Math.round(other.position.y) &&
-                Math.round(position.y) <= Math.round(other.position.y + height));
+        return Math.round(position.x ) + 0.999999 >= Math.round(other.position.x) &&
+                Math.round(position.x) <= Math.round(other.position.x) + 0.999999 &&
+                Math.round(position.y) + 0.999999 >= Math.round(other.position.y) &&
+                Math.round(position.y) <= Math.round(other.position.y) + 0.999999;
     }
 }

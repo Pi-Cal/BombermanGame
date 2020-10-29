@@ -19,7 +19,6 @@ public class Bomber extends Entity {
     private boolean[] side = {false, false, false, false};
     private final byte trai = 0, phai = 1, tren = 2, duoi = 3;
 
-
     private void setFalse() {
         for (int i = 0; i < 4; i++) {
             side[i] = false;
@@ -125,22 +124,22 @@ public class Bomber extends Entity {
         for (Entity entity : entities) {
             if (handle_1_Collision(entity) && (entity instanceof Wall)) {
                 setFalse();
-                if (Math.round(position.x + getWidth()) == Math.round(entity.position.x)) /*&&
+                if (Math.round(position.x) + 0.999999 == Math.round(entity.position.x)) /*&&
                         Math.round(position.y) > Math.round(entity.position.y - getHeight()) &&
                         Math.round(position.y) < Math.round(entity.position.y + entity.getHeight() + getHeight()))*/ {
                     System.out.println("trai");
                     side[trai] = true;
-                } else if (Math.round(position.x) == Math.round(entity.position.x + entity.getWidth())) /*&&
+                } else if (Math.round(position.x) == Math.round(entity.position.x) + 0.999999) /*&&
                         /*Math.round(position.y) > Math.round(entity.position.y - getHeight()) &&
                         Math.round(position.y) < Math.round(entity.position.y + entity.getHeight() + getHeight()))*/ {
                     System.out.println("phai");
                     side[phai] = true;
-                } else if (Math.round(position.y + getHeight()) == Math.round(entity.position.y)) /*&&
+                } else if (Math.round(position.y) + 0.999999 == Math.round(entity.position.y)) /*&&
                         Math.round(position.x) > Math.round(entity.position.x - getWidth()) &&
                         Math.round(position.x) < Math.round(entity.position.x + entity.getWidth() + getWidth()))*/ {
                     System.out.println("tren");
                     side[tren] = true;
-                } else if (Math.round(position.y) == Math.round(entity.position.y + entity.getHeight())) /*&&
+                } else if (Math.round(position.y) == Math.round(entity.position.y) + 0.999999) /*&&
                         Math.round(position.x) > Math.round(entity.position.x - getWidth()) &&
                         Math.round(position.x) < Math.round(entity.position.x + entity.getWidth() + getWidth()))*/ {
                     System.out.println("duoi");
