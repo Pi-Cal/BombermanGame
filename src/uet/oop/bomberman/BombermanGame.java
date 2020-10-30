@@ -30,7 +30,7 @@ public class BombermanGame extends Application {
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
     private Map<Vector, Entity> stillObjects = new HashMap<Vector, Entity>();
-    public static ArrayList<String> inputLists = new ArrayList<>();
+    public static String inputLists = "";
     public static char[][] map;
     Bomber bomberman;
 
@@ -42,7 +42,7 @@ public class BombermanGame extends Application {
     @Override
     public void start(Stage stage) {
         // Tao Canvas
-        createMap("levels/Level2.txt");
+        createMap("levels/Level31.txt");
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         gc = canvas.getGraphicsContext2D();
 
@@ -60,8 +60,8 @@ public class BombermanGame extends Application {
         scene.setOnKeyPressed(
                 (javafx.scene.input.KeyEvent event) -> {
                     String keyName = event.getCode().toString();
-                    if ( !inputLists.contains(keyName) ) {
-                        inputLists.add(keyName);
+                    if ( !inputLists.equals(keyName) ) {
+                        inputLists = keyName;
                     }
                 }
         );
@@ -69,7 +69,7 @@ public class BombermanGame extends Application {
         scene.setOnKeyReleased(
                 (javafx.scene.input.KeyEvent event) -> {
                     String keyName = event.getCode().toString();
-                    inputLists.remove(keyName);
+                    inputLists = "";
                 }
         );
 
