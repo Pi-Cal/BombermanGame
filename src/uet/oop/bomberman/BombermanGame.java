@@ -8,6 +8,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import uet.oop.bomberman.Character.Vector;
@@ -25,7 +26,8 @@ public class BombermanGame extends Application {
     
     public static int WIDTH = 20;
     public static int HEIGHT = 10;
-    
+
+
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
@@ -42,7 +44,7 @@ public class BombermanGame extends Application {
     @Override
     public void start(Stage stage) {
         // Tao Canvas
-        createMap("levels/Level31.txt");
+        createMap("levels/Level2.txt");
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         gc = canvas.getGraphicsContext2D();
 
@@ -52,6 +54,7 @@ public class BombermanGame extends Application {
 
         // Tao scene
         Scene scene = new Scene(root);
+        scene.setFill(Color.rgb(80, 160,0));
 
         // Them scene vao stage
         stage.setScene(scene);
@@ -119,8 +122,8 @@ public class BombermanGame extends Application {
                                 stillObjects.put(brick.getPosition(), brick);
                                 break;
                             default:
-                                Grass grass = new Grass(new Vector(j, i), Sprite.grass.getFxImage());
-                                stillObjects.put(grass.getPosition(), grass);
+                                //Grass grass = new Grass(new Vector(j, i), Sprite.grass.getFxImage());
+                                //stillObjects.put(grass.getPosition(), grass);
                         }
                     }
                 }

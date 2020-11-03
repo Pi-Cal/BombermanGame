@@ -15,9 +15,10 @@ import java.util.Map;
 
 public class Bomber extends Entity {
 
-    private int time = 0;
+    private int step = 0;
     private int iMap;
     private int jMap;
+    private boolean dead = false;
     private double speed = 120.0 * 8;
     private boolean[] side = {false, false, false, false};
     private final byte left = 0, right = 1, up = 2, down = 3;
@@ -26,6 +27,14 @@ public class Bomber extends Entity {
         for (int i = 0; i < 4; i++) {
             side[i] = false;
         }
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
 
     private boolean isMovingVertical() {
@@ -58,7 +67,7 @@ public class Bomber extends Entity {
         if (!isMovingVertical()) {
             if (BombermanGame.inputLists.equals("LEFT") && side[left]) {
                 this.velocity.add(-speed, 0);
-                switch (time % 3) {
+                switch (step % 3) {
                     case 0:
                         img = Sprite.player_left.getFxImage();
                         break;
@@ -68,11 +77,10 @@ public class Bomber extends Entity {
                     default:
                         img = Sprite.player_left_2.getFxImage();
                 }
-                time++;
             }
             if (BombermanGame.inputLists.equals("RIGHT") && side[right]) {
                 this.velocity.add(speed, 0);
-                switch (time % 3) {
+                switch (step % 3) {
                     case 0:
                         img = Sprite.player_right.getFxImage();
                         break;
@@ -82,13 +90,12 @@ public class Bomber extends Entity {
                     default:
                         img = Sprite.player_right_2.getFxImage();
                 }
-                time++;
             }
         }
         if (!isMovingHorizontal()) {
             if (BombermanGame.inputLists.equals("UP") && side[up]) {
                 this.velocity.add(0, -speed);
-                switch (time % 3) {
+                switch (step % 3) {
                     case 0:
                         img = Sprite.player_up.getFxImage();
                         break;
@@ -98,11 +105,10 @@ public class Bomber extends Entity {
                     default:
                         img = Sprite.player_up_2.getFxImage();
                 }
-                time++;
             }
             if (BombermanGame.inputLists.equals("DOWN") && side[down]) {
                 this.velocity.add(0, speed);
-                switch (time % 3) {
+                switch (step % 3) {
                     case 0:
                         img = Sprite.player_down.getFxImage();
                         break;
@@ -112,26 +118,23 @@ public class Bomber extends Entity {
                     default:
                         img = Sprite.player_down_2.getFxImage();
                 }
-                time++;
             }
         }
-
         velocity.multiply( 1/120.0);
         position.add(this.getVelocity());
-
+        step++;
     }
 
     public void handleCollision(Map<Vector, Entity> t) {
 
         if (isMovingHorizontal()) {
             jMap = (int)(Math.round(position.x) / Sprite.SCALED_SIZE);
-            System.out.println("Horizontal");
         }
 
         if (isMovingVertical()) {
             iMap = (int)(Math.round(position.y) / Sprite.SCALED_SIZE);
         }
-        System.out.println(iMap + " " + jMap);
+
         setFalse();
 
         if (BombermanGame.map[iMap][jMap + 1] == ' ') {
@@ -159,9 +162,8 @@ public class Bomber extends Entity {
         if (BombermanGame.map[iMap][jMap - 1] == ' ') {
             side[left] = true;
         }
-
-        
-
     }
+
+
 
 }
