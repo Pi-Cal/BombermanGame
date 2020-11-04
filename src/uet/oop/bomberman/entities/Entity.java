@@ -14,8 +14,8 @@ import java.awt.*;
 public abstract class Entity {
     public Vector position = new Vector(0,0);
     protected Image img;
-    private double width = Sprite.SCALED_SIZE;
-    private double height = Sprite.SCALED_SIZE;
+    private double width = Math.round(Sprite.SCALED_SIZE);
+    private double height = Math.round(Sprite.SCALED_SIZE);
 
     public double getWidth() {
         return width;
