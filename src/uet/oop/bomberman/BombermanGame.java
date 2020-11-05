@@ -1,40 +1,41 @@
 package uet.oop.bomberman;
 
-import com.sun.javafx.sg.prism.NGNode;
 import javafx.animation.*;
 import javafx.application.Application;
-import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.Camera.GameCamera;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
 
-import java.awt.event.KeyEvent;
 import java.util.*;
 
 public class BombermanGame extends Application {
     
-    public static int WIDTH = 20;
-    public static int HEIGHT = 10;
-
+    public static final int WIDTH = 20;
+    public static final int HEIGHT = 10;
+    private static int realHeight;
+    private static int realWidth;
 
     private GraphicsContext gc;
     private Canvas canvas;
+    private Group root;
+
     private List<Entity> entities = new ArrayList<>();
     private Map<Vector, Entity> stillObjects = new HashMap<Vector, Entity>();
     public static String inputLists = "";
     public static char[][] map;
+
     Bomber bomberman;
+    GameCamera gameCamera = new GameCamera(0,0);
 
 
     public static void main(String[] args) {
@@ -45,11 +46,11 @@ public class BombermanGame extends Application {
     public void start(Stage stage) {
         // Tao Canvas
         createMap("levels/Level2.txt");
-        canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
+        canvas = new Canvas(Sprite.SCALED_SIZE * 31, Sprite.SCALED_SIZE * 13);
         gc = canvas.getGraphicsContext2D();
 
         // Tao root container
-        Group root = new Group();
+        root = new Group();
         root.getChildren().add(canvas);
 
         // Tao scene
@@ -58,6 +59,8 @@ public class BombermanGame extends Application {
 
         // Them scene vao stage
         stage.setScene(scene);
+        stage.setHeight(HEIGHT * Sprite.SCALED_SIZE);
+        stage.setWidth(WIDTH * Sprite.SCALED_SIZE);
         stage.show();
 
         scene.setOnKeyPressed(
@@ -108,13 +111,15 @@ public class BombermanGame extends Application {
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 int level = myReader.nextInt();
-                HEIGHT = myReader.nextInt();
-                WIDTH = myReader.nextInt();
-                map = new char[HEIGHT][WIDTH];
+                int height= myReader.nextInt();
+                realHeight = height;
+                int width = myReader.nextInt();
+                realWidth = width;
+                map = new char[height][width];
                 String row = myReader.nextLine();
-                for (int i = 0; i < HEIGHT; i++ ) {
+                for (int i = 0; i < height; i++ ) {
                     row = myReader.nextLine();
-                    for (int j = 0; j < WIDTH; j++) {
+                    for (int j = 0; j < width; j++) {
                         map[i][j] = row.charAt(j);
                         switch (map[i][j]) {
                             case '#' :
@@ -141,7 +146,11 @@ public class BombermanGame extends Application {
     }
 
     public void update() {
+
         entities.forEach(Entity::update);
+        gameCamera.update(bomberman);
+        canvas.setTranslateX(-gameCamera.getxOffset());
+        canvas.setTranslateY(-gameCamera.getyOffset());
     }
 
     public void render() {
@@ -150,5 +159,13 @@ public class BombermanGame extends Application {
             entry.getValue().render(gc);
         }
         entities.forEach(g -> g.render(gc));
+    }
+
+    public static int getRealHeight() {
+        return realHeight;
+    }
+
+    public static int getRealWidth() {
+        return realWidth;
     }
 }
