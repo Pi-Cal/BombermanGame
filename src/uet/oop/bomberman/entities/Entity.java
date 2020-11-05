@@ -16,6 +16,7 @@ public abstract class Entity {
     protected Image img;
     private double width = Sprite.SCALED_SIZE;
     private double height = Sprite.SCALED_SIZE;
+    protected double numFrame = 3;
 
     public double getWidth() {
         return width;
@@ -54,6 +55,10 @@ public abstract class Entity {
         this.img = img;
         this.width = img.getWidth();
         this.height = img.getHeight();
+    }
+
+    public Entity(Vector p) {
+        this.position.setVector(p.x * Sprite.SCALED_SIZE, p.y * Sprite.SCALED_SIZE);
     }
 
     public void render(GraphicsContext gc) {
