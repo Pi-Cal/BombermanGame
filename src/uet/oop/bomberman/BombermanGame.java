@@ -48,6 +48,7 @@ public class BombermanGame extends Application {
         createMap("levels/Level2.txt");
         canvas = new Canvas(Sprite.SCALED_SIZE * 31, Sprite.SCALED_SIZE * 13);
         gc = canvas.getGraphicsContext2D();
+        gc.setFill(Color.rgb(80, 160,0));
 
         // Tao root container
         root = new Group();
@@ -82,15 +83,12 @@ public class BombermanGame extends Application {
 
         bomberman = new Bomber(new Vector(1,1), Sprite.player_right.getFxImage());
         Bomb bomb = new Bomb(new Vector(3, 3));
-        double startTime = System.nanoTime();
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
                 render();
                 update();
                 handleEvent();
-                double time = (l - startTime) / 1000000000;
-                bomb.normalBomb(time, gc);
             }
         };
 

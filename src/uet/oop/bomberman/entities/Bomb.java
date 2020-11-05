@@ -9,7 +9,8 @@ import uet.oop.bomberman.graphics.Sprite;
 public class Bomb extends Entity {
 
     public static final double BOMB_EXIST_TIME = 3;
-    private int length;
+    protected int length;
+    protected long startTime;
 
     private Animation unexploded;
     private boolean isExplode = false;
@@ -19,20 +20,22 @@ public class Bomb extends Entity {
         img = Sprite.bomb.getFxImage();
         unexploded = new Animation(new Sprite[]{Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2});
         numFrame = 3;
-        length = 1;
+        length = Sprite.SCALED_SIZE;
+        startTime = System.nanoTime();
     }
 
     public Bomb(Vector p, Image img) {
         super(p, img);
         unexploded = new Animation(new Sprite[]{Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2});
         numFrame = 3;
-        length = 1;
+        length = Sprite.SCALED_SIZE;
+        startTime = System.nanoTime();
     }
 
     public Bomb(Vector p, Image img, int flameLength) {
         super(p, img);
         unexploded = new Animation(new Sprite[]{Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2});
-        length = flameLength;
+        length = flameLength * Sprite.SCALED_SIZE;
         numFrame = 3;
     }
 
@@ -86,7 +89,7 @@ public class Bomb extends Entity {
         horizontalRightLastFlame.playAnimation(time, gc, new Vector(position.x + length, position.y));
         verticalTopLastFlame.playAnimation(time, gc, new Vector(position.x, position.y - length));
         verticalDownLastFlame.playAnimation(time, gc, new Vector(position.x, position.y + length));
-        for (int j = 1; j < length; j++) {
+        for (int j = Sprite.SCALED_SIZE; j < length; j += Sprite.SCALED_SIZE) {
             verticalMiddleFlame.playAnimation(time, gc, new Vector( position.x, position.y - j));
             verticalMiddleFlame.playAnimation(time, gc, new Vector( position.x, position.y + j));
             horizontalMiddleFlame.playAnimation(time, gc, new Vector( position.x - j, position.y));
@@ -95,13 +98,14 @@ public class Bomb extends Entity {
 
     }
 
-    public void normalBomb(double time, GraphicsContext gc) {
-        if (time < BOMB_EXIST_TIME) {
-            normalAnimation(time, gc);
+    public void normalBomb(long time, GraphicsContext gc) {
+        double Btime = (double) (time - startTime) / 1000000000;
+        if (Btime < BOMB_EXIST_TIME) {
+            normalAnimation(Btime, gc);
         }
         else {
             isExplode = true;
-            explode1(time, gc);
+            explode1(Btime, gc);
         }
 
 
