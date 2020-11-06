@@ -18,6 +18,7 @@ public class Bomber extends Entity {
     private int step = 0;
     private int iMap;
     private int jMap;
+    private Vector lastPosition;
     private boolean dead = false;
     private double speed = 120.0 * 8;
     private boolean[] side = {false, false, false, false};
@@ -44,10 +45,12 @@ public class Bomber extends Entity {
     private boolean isMovingHorizontal() {
         return ((int) Math.round(position.x)) % Sprite.SCALED_SIZE != 0;
     }
+
     public Vector velocity = new Vector(0, 0);
 
     public Bomber(Vector position, Image img) {
         super(position, img);
+        lastPosition = new Vector(position.x * Sprite.SCALED_SIZE, position.y * Sprite.SCALED_SIZE);
     }
 
     @Override
@@ -61,7 +64,9 @@ public class Bomber extends Entity {
 
 
     @Override
-    public void update() {
+    public void update() {}
+
+    public void update(GraphicsContext gc) {
         jMap = (int) Math.round(position.x / Sprite.SCALED_SIZE);
         iMap = (int) Math.round(position.y / Sprite.SCALED_SIZE);
         if (!isMovingVertical()) {
@@ -123,9 +128,16 @@ public class Bomber extends Entity {
         velocity.multiply( 1/120.0);
         position.add(this.getVelocity());
         step++;
+        clear(gc);
+        render(gc);
     }
 
-    public void handleCollision(Map<Vector, Entity> t) {
+    public void clear(GraphicsContext gc) {
+        gc.clearRect(lastPosition.x, lastPosition.y, Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
+        lastPosition.setVector(position.x, position.y);
+    }
+
+    public void handleCollision() {
 
         if (isMovingHorizontal()) {
             jMap = (int)(Math.round(position.x) / Sprite.SCALED_SIZE);

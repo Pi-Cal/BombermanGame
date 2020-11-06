@@ -11,13 +11,12 @@ public class GameCamera {
     public final int width = Math.round(BombermanGame.WIDTH * Sprite.SCALED_SIZE);
     public final int height = Math.round(BombermanGame.HEIGHT * Sprite.SCALED_SIZE);
     private double xOffset, yOffset;
-
+    private double lastXOffset, lastYOffset;
     public GameCamera(double xOffset, double yOffset) {
-    }
-
-    public void move(double xAmt, double yAmt) {
-        xOffset += xAmt;
-        yOffset += yAmt;
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
+        this.lastXOffset = xOffset;
+        this.lastYOffset = yOffset;
     }
 
     public double getxOffset() {
@@ -39,11 +38,7 @@ public class GameCamera {
     public void update(Bomber bomber) {
         int size = Sprite.SCALED_SIZE;
         xOffset = bomber.position.x + Math.round(bomber.getWidth() / 2) - Math.round(width / 2) ;
-        System.out.println("x0: " + xOffset);
-        System.out.println("xp: " + bomber.position.x + "Xw: " + Math.round(bomber.getWidth() / 2) + " ww: " + Math.round(width / 2));
         yOffset  = bomber.position.y + Math.round(bomber.getHeight() / 2) - Math.round(height / 2);
-        System.out.println("y0: " + yOffset );
-        System.out.println("yp: " + bomber.position.y + "yw: " + Math.round(bomber.getHeight() / 2) + " hw: " + Math.round(height / 2));
         if (xOffset < 0) { xOffset = 0; }
         if (yOffset < 0) { yOffset = 0; }
         if (xOffset + width > Math.round(BombermanGame.getRealWidth() * size) + 16){
@@ -52,5 +47,24 @@ public class GameCamera {
         if (yOffset + height > Math.round(BombermanGame.getRealHeight() * size) + 48){
             yOffset = Math.floor(BombermanGame.getRealHeight() * size - height) + 48;
         }
+        System.out.println(xOffset + " and " + lastXOffset);
+        lastYOffset = yOffset;
+        lastXOffset = xOffset;
+    }
+
+    public void setLastXOffset(double lastXOffset) {
+        this.lastXOffset = lastXOffset;
+    }
+
+    public void setLastYOffset(double lastYOffset) {
+        this.lastYOffset = lastYOffset;
+    }
+
+    public double getLastXOffset() {
+        return lastXOffset;
+    }
+
+    public double getLastYOffset() {
+        return lastYOffset;
     }
 }

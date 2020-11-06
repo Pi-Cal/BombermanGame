@@ -21,20 +21,24 @@ import java.util.*;
 public class BombermanGame extends Application {
     
     public static final int WIDTH = 20;
-    public static final int HEIGHT = 10;
+    public static final int HEIGHT = 16;
     private static int realHeight;
     private static int realWidth;
+    private long lastTime = 0;
 
     private GraphicsContext gc;
     private Canvas canvas;
     private Group root;
 
     private List<Entity> entities = new ArrayList<>();
+    private List<Entity> walls = new ArrayList<>();
+    private List<Entity> bricks = new ArrayList<>();
     private Map<Vector, Entity> stillObjects = new HashMap<Vector, Entity>();
     public static String inputLists = "";
     public static char[][] map;
 
     Bomber bomberman;
+    Bomb bomb;
     GameCamera gameCamera = new GameCamera(0,0);
 
 
@@ -46,7 +50,7 @@ public class BombermanGame extends Application {
     public void start(Stage stage) {
         // Tao Canvas
         createMap("levels/Level2.txt");
-        canvas = new Canvas(Sprite.SCALED_SIZE * 31, Sprite.SCALED_SIZE * 13);
+        canvas = new Canvas(Sprite.SCALED_SIZE * realWidth, Sprite.SCALED_SIZE * realHeight);
         gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.rgb(80, 160,0));
 
@@ -82,24 +86,24 @@ public class BombermanGame extends Application {
 
 
         bomberman = new Bomber(new Vector(1,1), Sprite.player_right.getFxImage());
-        Bomb bomb = new Bomb(new Vector(3, 3));
+        bomb = new Bomb(new Vector(3, 3));
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                render();
-                update();
+                if (l - lastTime > 100000000/3) {
+                    setLastTime(l);
+                    update(l);
+                }
                 handleEvent();
             }
         };
 
+        render();
         timer.start();
-
-        entities.add(bomberman);
-        entities.add(bomb);
     }
 
     public void handleEvent() {
-        bomberman.handleCollision(stillObjects);
+        bomberman.handleCollision();
     }
 
     public void createMap(String filePath) {
@@ -122,11 +126,11 @@ public class BombermanGame extends Application {
                         switch (map[i][j]) {
                             case '#' :
                                 Wall wall = new Wall(new Vector(j, i), Sprite.wall.getFxImage());
-                                stillObjects.put(wall.getPosition(), wall);
+                                walls.add(wall);
                                 break;
                             case '*' :
                                 Brick brick = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
-                                stillObjects.put(brick.getPosition(), brick);
+                                bricks.add(brick);
                                 break;
                             default:
                                 //Grass grass = new Grass(new Vector(j, i), Sprite.grass.getFxImage());
@@ -143,20 +147,19 @@ public class BombermanGame extends Application {
         }
     }
 
-    public void update() {
-
-        entities.forEach(Entity::update);
+    public void update(long time) {
         gameCamera.update(bomberman);
         canvas.setTranslateX(-gameCamera.getxOffset());
         canvas.setTranslateY(-gameCamera.getyOffset());
+        bomberman.position.add(gameCamera.getxOffset() - gameCamera.getLastXOffset(),
+                gameCamera.getyOffset() - gameCamera.getLastYOffset());
+        bomberman.update(gc);
+        bomb.update(time, gc);
     }
 
     public void render() {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        for (Map.Entry<Vector, Entity> entry : stillObjects.entrySet()) {
-            entry.getValue().render(gc);
-        }
-        entities.forEach(g -> g.render(gc));
+        walls.forEach(g -> g.render(gc));
+        bricks.forEach(g -> g.render(gc));
     }
 
     public static int getRealHeight() {
@@ -165,5 +168,9 @@ public class BombermanGame extends Application {
 
     public static int getRealWidth() {
         return realWidth;
+    }
+
+    public void setLastTime(long l) {
+        lastTime = l;
     }
 }

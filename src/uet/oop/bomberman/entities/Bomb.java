@@ -48,8 +48,11 @@ public class Bomb extends Entity {
     }
 
     @Override
-    public void update() {
+    public void update() {}
 
+    public void update(long time, GraphicsContext gc) {
+        normalBomb(time, gc);
+        render(gc);
     }
 
     @Override
@@ -99,7 +102,7 @@ public class Bomb extends Entity {
     }
 
     public void normalBomb(long time, GraphicsContext gc) {
-        double Btime = (double) (time - startTime) / 1000000000;
+        double Btime = (double) (time - startTime) / 10000000/24;
         if (Btime < BOMB_EXIST_TIME) {
             normalAnimation(Btime, gc);
         }
