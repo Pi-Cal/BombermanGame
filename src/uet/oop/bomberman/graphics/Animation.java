@@ -41,7 +41,6 @@ public class Animation {
                         Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
                 graphicsContext.drawImage(frames[i].getFxImage(), p.x, p.y,
                         Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
-                System.out.println(p.x + " " + p.y + "aa");
             }
         }
     }

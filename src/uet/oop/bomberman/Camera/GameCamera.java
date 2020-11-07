@@ -47,7 +47,6 @@ public class GameCamera {
         if (yOffset + height > Math.round(BombermanGame.getRealHeight() * size) + 48){
             yOffset = Math.floor(BombermanGame.getRealHeight() * size - height) + 48;
         }
-        System.out.println(xOffset + " and " + lastXOffset);
         lastYOffset = yOffset;
         lastXOffset = xOffset;
     }

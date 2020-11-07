@@ -25,12 +25,13 @@ public class BombermanGame extends Application {
     private static int realHeight;
     private static int realWidth;
     private long lastTime = 0;
+    private int gameTime = 0;
 
     private GraphicsContext gc;
     private Canvas canvas;
     private Group root;
 
-    private List<Entity> entities = new ArrayList<>();
+    private List<Enemy> enemies = new ArrayList<>();
     private List<Entity> walls = new ArrayList<>();
     private List<Entity> bricks = new ArrayList<>();
     private Map<Vector, Entity> stillObjects = new HashMap<Vector, Entity>();
@@ -43,7 +44,7 @@ public class BombermanGame extends Application {
 
 
     public static void main(String[] args) {
-        Application .launch(BombermanGame.class);
+        Application.launch(BombermanGame.class);
     }
 
     @Override
@@ -84,15 +85,21 @@ public class BombermanGame extends Application {
                 }
         );
 
-
+        gameTime = 0;
         bomberman = new Bomber(new Vector(1,1), Sprite.player_right.getFxImage());
-        bomb = new Bomb(new Vector(3, 3));
+
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
                 if (l - lastTime > 100000000/3) {
                     setLastTime(l);
                     update(l);
+                }
+
+                for (Enemy e : enemies) {
+                    if (l - lastTime > 2000000000) {
+                        e.update(gc);
+                    }
                 }
                 handleEvent();
             }
@@ -132,6 +139,11 @@ public class BombermanGame extends Application {
                                 Brick brick = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
                                 bricks.add(brick);
                                 break;
+                            case '1' :
+                                Enemy enemy = new Enemy(new Vector(j, i), Sprite.balloom_left1.getFxImage());
+                                enemies.add(enemy);
+                                map[i][j] = ' ';
+                                break;
                             default:
                                 //Grass grass = new Grass(new Vector(j, i), Sprite.grass.getFxImage());
                                 //stillObjects.put(grass.getPosition(), grass);
@@ -154,7 +166,7 @@ public class BombermanGame extends Application {
         bomberman.position.add(gameCamera.getxOffset() - gameCamera.getLastXOffset(),
                 gameCamera.getyOffset() - gameCamera.getLastYOffset());
         bomberman.update(gc);
-        bomb.update(time, gc);
+        enemies.forEach(g -> g.update(gc));
     }
 
     public void render() {

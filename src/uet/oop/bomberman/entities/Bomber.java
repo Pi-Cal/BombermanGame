@@ -69,7 +69,7 @@ public class Bomber extends Entity {
     public void update(GraphicsContext gc) {
         jMap = (int) Math.round(position.x / Sprite.SCALED_SIZE);
         iMap = (int) Math.round(position.y / Sprite.SCALED_SIZE);
-        if (!isMovingVertical()) {
+        if (!(isMovingVertical())) {
             if (BombermanGame.inputLists.equals("LEFT") && side[left]) {
                 this.velocity.add(-speed, 0);
                 switch (step % 3) {
