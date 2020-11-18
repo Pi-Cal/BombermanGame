@@ -16,7 +16,6 @@ public abstract class Entity {
     protected Image img;
     private double width = Math.round(Sprite.SCALED_SIZE);
     private double height = Math.round(Sprite.SCALED_SIZE);
-    protected double numFrame = 3;
 
     public double getWidth() {
         return width;
@@ -61,6 +60,7 @@ public abstract class Entity {
         this.position.setVector(p.x * Sprite.SCALED_SIZE, p.y * Sprite.SCALED_SIZE);
     }
 
+    public Entity() {}
     public void render(GraphicsContext gc) {
         SnapshotParameters params = new SnapshotParameters();
         params.setFill(Color.TRANSPARENT);
@@ -74,7 +74,7 @@ public abstract class Entity {
     public abstract void update();
 
     public boolean handle_1_Collision(Entity other) {
-        if (other instanceof Grass) { return false; }
+        //if (other instanceof Grass) { return false; }
         return Math.round(position.x + width) >= Math.round(other.position.x) &&
                 Math.round(position.x) <= Math.round(other.position.x + width) &&
                 Math.round(position.y + height) >= Math.round(other.position.y) &&

@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.graphics.Sprite;
+import uet.oop.bomberman.notEntity.Bomb;
 
 import javax.naming.ldap.Control;
 import java.util.List;
@@ -124,6 +125,9 @@ public class Bomber extends Entity {
                         img = Sprite.player_down_2.getFxImage();
                 }
             }
+        }
+        if (BombermanGame.inputLists.equals("SPACE")) {
+            BombermanGame.bombs.add(new Bomb(position.toNormal().round(), 2));
         }
         velocity.multiply( 1/120.0);
         position.add(this.getVelocity());

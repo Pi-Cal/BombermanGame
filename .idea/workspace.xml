@@ -23,14 +23,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eaf032e2-1521-4e48-ab95-d2b150e3b49d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Item/BombItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Item/FlameItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Item/Item.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Item/Portal.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Item/SpeedItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/graphics/FlameAnimation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/levels/Level2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/levels/Level2.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/uet/oop/bomberman/BombermanGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/BombermanGame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/uet/oop/bomberman/Camera/GameCamera.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/Camera/GameCamera.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uet/oop/bomberman/Character/Vector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/Character/Vector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Bomb.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/notEntity/Bomb.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Bomber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Bomber.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Enemy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Enemy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Brick.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Brick.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Entity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Entity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/uet/oop/bomberman/entities/Grass.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/uet/oop/bomberman/graphics/Animation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/uet/oop/bomberman/graphics/Animation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/levels/Level2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/levels/Level2.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,11 +59,15 @@
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="mavenHome" value="C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2020.2.1\plugins\maven\lib\maven3" />
+        <option name="mavenHome" value="C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2020.2.2\plugins\maven\lib\maven3" />
       </MavenGeneralSettings>
     </option>
   </component>
   <component name="ProjectId" id="1jYSXS8GsqYV2afFHDUwJZnc9cm" />
+  <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -63,7 +75,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/Java/Kethua2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Java/ngoaiLe1" />
     <property name="restartRequiresConfirmation" value="false" />
   </component>
   <component name="RecentsManager">
@@ -119,34 +131,44 @@
       <screen x="0" y="0" width="1536" height="864" />
     </state>
     <state x="223" y="87" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.864@0.0.1536.864" timestamp="1603979627050" />
-    <state x="574" y="116" key="#com.intellij.ide.util.MemberChooser" timestamp="1604723717611">
-      <screen x="0" y="0" width="1536" height="864" />
+    <state x="478" y="49" key="#com.intellij.ide.util.MemberChooser" timestamp="1605599295337">
+      <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="574" y="116" key="#com.intellij.ide.util.MemberChooser/0.0.1536.864@0.0.1536.864" timestamp="1604723717611" />
-    <state x="549" y="187" key="FileChooserDialogImpl" timestamp="1604726463584">
-      <screen x="0" y="0" width="1536" height="864" />
+    <state x="478" y="49" key="#com.intellij.ide.util.MemberChooser/0.0.1280.680@0.0.1280.680" timestamp="1605599295337" />
+    <state x="574" y="116" key="#com.intellij.ide.util.MemberChooser/0.0.1536.864@0.0.1536.864" timestamp="1604661728800" />
+    <state x="430" y="95" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1605588603675">
+      <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="549" y="187" key="FileChooserDialogImpl/0.0.1536.864@0.0.1536.864" timestamp="1604726463584" />
-    <state width="1493" height="225" key="GridCell.Tab.0.bottom" timestamp="1604735329313">
-      <screen x="0" y="0" width="1536" height="864" />
+    <state x="430" y="95" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.680@0.0.1280.680" timestamp="1605588603675" />
+    <state x="371" y="88" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1605157190044">
+      <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1604577518100" />
-    <state width="1493" height="225" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1604735329313" />
-    <state width="1493" height="225" key="GridCell.Tab.0.center" timestamp="1604735329313">
-      <screen x="0" y="0" width="1536" height="864" />
+    <state x="371" y="88" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1280.680@0.0.1280.680" timestamp="1605157190044" />
+    <state x="458" y="147" key="FileChooserDialogImpl" timestamp="1605597127163">
+      <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1604577518100" />
-    <state width="1493" height="225" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1604735329313" />
-    <state width="1493" height="225" key="GridCell.Tab.0.left" timestamp="1604735329313">
-      <screen x="0" y="0" width="1536" height="864" />
+    <state x="458" y="147" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1605597127163" />
+    <state x="549" y="187" key="FileChooserDialogImpl/0.0.1536.864@0.0.1536.864" timestamp="1604464705073" />
+    <state width="1237" height="163" key="GridCell.Tab.0.bottom" timestamp="1605626143801">
+      <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1604577518100" />
-    <state width="1493" height="225" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1604735329313" />
-    <state width="1493" height="225" key="GridCell.Tab.0.right" timestamp="1604735329313">
-      <screen x="0" y="0" width="1536" height="864" />
+    <state width="1237" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1605626143801" />
+    <state width="1493" height="225" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1604675238579" />
+    <state width="1237" height="163" key="GridCell.Tab.0.center" timestamp="1605626143801">
+      <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1604577518100" />
-    <state width="1493" height="225" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1604735329313" />
+    <state width="1237" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1605626143801" />
+    <state width="1493" height="225" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1604675238579" />
+    <state width="1237" height="163" key="GridCell.Tab.0.left" timestamp="1605626143801">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1237" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1605626143801" />
+    <state width="1493" height="225" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1604675238579" />
+    <state width="1237" height="163" key="GridCell.Tab.0.right" timestamp="1605626143801">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="1237" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1605626143801" />
+    <state width="1493" height="225" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1604675238579" />
     <state width="1493" height="277" key="GridCell.Tab.1.bottom" timestamp="1604047054600">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
@@ -171,31 +193,26 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="280" y="102" key="MultipleFileMergeDialog/0.0.1280.680@0.0.1280.680" timestamp="1604577802481" />
-    <state x="280" y="94" key="Vcs.Push.Dialog.v2" timestamp="1604735585853">
-      <screen x="0" y="0" width="1536" height="864" />
+    <state x="233" y="74" key="Vcs.Push.Dialog.v2" timestamp="1604577628796">
+      <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="233" y="74" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1604577628796" />
-    <state x="280" y="94" key="Vcs.Push.Dialog.v2/0.0.1536.864@0.0.1536.864" timestamp="1604735585853" />
-    <state x="93" y="183" width="1030" height="495" key="dock-window-1" timestamp="1604727557625">
-      <screen x="0" y="0" width="1536" height="864" />
-    </state>
-    <state x="93" y="183" width="1030" height="495" key="dock-window-1/0.0.1536.864@0.0.1536.864" timestamp="1604727557625" />
     <state x="478" y="136" width="579" height="592" key="find.popup" timestamp="1604208075113">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
     <state x="478" y="136" width="579" height="592" key="find.popup/0.0.1536.864@0.0.1536.864" timestamp="1604208075113" />
-    <state x="425" y="197" key="run.anything.popup" timestamp="1603992161006">
-      <screen x="0" y="0" width="1536" height="864" />
+    <state x="652" y="139" key="refactoring.ChangeSignatureDialog" timestamp="1605587403335">
+      <screen x="0" y="0" width="1280" height="680" />
     </state>
+    <state x="652" y="139" key="refactoring.ChangeSignatureDialog/0.0.1280.680@0.0.1280.680" timestamp="1605587403335" />
+    <state x="354" y="155" key="run.anything.popup" timestamp="1605590786878">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="354" y="155" key="run.anything.popup/0.0.1280.680@0.0.1280.680" timestamp="1605590786878" />
     <state x="425" y="197" key="run.anything.popup/0.0.1536.864@0.0.1536.864" timestamp="1603992161006" />
     <state x="431" y="181" width="672" height="678" key="search.everywhere.popup" timestamp="1604467053271">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
     <state x="431" y="181" width="672" height="678" key="search.everywhere.popup/0.0.1536.864@0.0.1536.864" timestamp="1604467053271" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/BombermanGame_java$BombermanGame.ic" NAME="BombermanGame Coverage Results" MODIFIED="1604730543932" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>uet.oop.bomberman.*</FILTER>
-    </SUITE>
   </component>
 </project>

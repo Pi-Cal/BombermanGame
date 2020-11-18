@@ -5,9 +5,12 @@ import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
 
 public class Animation {
-    private Sprite[] frames;
-    private double delay = 0.5;
-    private int numFrames;
+    public final static double NANO = 1000000000;
+    protected Sprite[] frames;
+    protected double delay = 0.2;
+    protected int numFrames;
+    protected boolean isDone = false;
+
 
     public Animation() { }
     public Animation(Sprite[] frames) {
@@ -19,6 +22,19 @@ public class Animation {
         this.frames = frames;
         numFrames = frames.length;
         this.delay = delay;
+    }
+
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public int getNumFrames() {
+        return numFrames;
+    }
+
+    public void setNumFrames(int numFrames) {
+        this.numFrames = numFrames;
     }
 
     public double getDelay() {
@@ -34,14 +50,35 @@ public class Animation {
         numFrames = frames.length;
     }
 
-    public void playAnimation(double time, GraphicsContext graphicsContext, Vector p) {
+    public void playAnimation(long time, GraphicsContext graphicsContext, Vector p) {
+        double t = time / NANO;
+        graphicsContext.clearRect(p.x  * Sprite.SCALED_SIZE, p.y  * Sprite.SCALED_SIZE,
+                Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
+            for (int i = 0; i < numFrames; i++) {
+                if (t < (i + 1) * delay && t >= i * delay) {
+                    graphicsContext.drawImage(frames[i].getFxImage(),
+                            p.x * Sprite.SCALED_SIZE, p.y * Sprite.SCALED_SIZE,
+                            Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
+                    return;
+                }
+            }
+            isDone = true;
+
+    }
+
+    public void playContinuously(long time, GraphicsContext graphicsContext, Vector p) {
+        double t = (time / NANO) % (delay * numFrames);
+        graphicsContext.clearRect(p.x  * Sprite.SCALED_SIZE, p.y  * Sprite.SCALED_SIZE,
+                Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
         for (int i = 0; i < numFrames; i++) {
-            if (time < (i + 1) * delay && time >= i * delay) {
-                graphicsContext.fillRect(p.x, p.y,
+            if (t < (i + 1) * delay && t >= i * delay) {
+                graphicsContext.drawImage(frames[i].getFxImage(),
+                        p.x * Sprite.SCALED_SIZE, p.y * Sprite.SCALED_SIZE,
                         Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
-                graphicsContext.drawImage(frames[i].getFxImage(), p.x, p.y,
-                        Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
+                return;
             }
         }
+        isDone = true;
+
     }
 }

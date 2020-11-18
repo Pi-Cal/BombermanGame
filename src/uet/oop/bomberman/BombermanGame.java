@@ -10,8 +10,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.entities.*;
+import uet.oop.bomberman.entities.Item.FlameItem;
+import uet.oop.bomberman.entities.Item.Portal;
+import uet.oop.bomberman.entities.Item.SpeedItem;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.Camera.GameCamera;
+import uet.oop.bomberman.notEntity.Bomb;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,26 +29,25 @@ public class BombermanGame extends Application {
     private static int realHeight;
     private static int realWidth;
     private long lastTime = 0;
-    private int gameTime = 0;
 
     private GraphicsContext gc;
     private Canvas canvas;
     private Group root;
 
-    private List<Enemy> enemies = new ArrayList<>();
+    private List<Entity> entities = new ArrayList<>();
     private List<Entity> walls = new ArrayList<>();
-    private List<Entity> bricks = new ArrayList<>();
+    private static Map<String, Brick> bricks = new HashMap<>();
     private Map<Vector, Entity> stillObjects = new HashMap<Vector, Entity>();
     public static String inputLists = "";
     public static char[][] map;
 
     Bomber bomberman;
-    Bomb bomb;
+    public static List<Bomb> bombs = new ArrayList<>();
     GameCamera gameCamera = new GameCamera(0,0);
 
 
     public static void main(String[] args) {
-        Application.launch(BombermanGame.class);
+        Application .launch(BombermanGame.class);
     }
 
     @Override
@@ -85,23 +88,20 @@ public class BombermanGame extends Application {
                 }
         );
 
-        gameTime = 0;
-        bomberman = new Bomber(new Vector(1,1), Sprite.player_right.getFxImage());
 
+        bomberman = new Bomber(new Vector(1,1), Sprite.player_right.getFxImage());
+        //bomb = new Bomb(new Vector(3, 3));
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
                 if (l - lastTime > 100000000/3) {
                     setLastTime(l);
                     update(l);
-                }
 
-                for (Enemy e : enemies) {
-                    if (l - lastTime > 2000000000) {
-                        e.update(gc);
-                    }
                 }
                 handleEvent();
+
+
             }
         };
 
@@ -137,12 +137,8 @@ public class BombermanGame extends Application {
                                 break;
                             case '*' :
                                 Brick brick = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
-                                bricks.add(brick);
-                                break;
-                            case '1' :
-                                Enemy enemy = new Enemy(new Vector(j, i), Sprite.balloom_left1.getFxImage());
-                                enemies.add(enemy);
-                                map[i][j] = ' ';
+                                Vector p = new Vector(j, i);
+                                bricks.put(p.toString(), brick);
                                 break;
                             default:
                                 //Grass grass = new Grass(new Vector(j, i), Sprite.grass.getFxImage());
@@ -153,6 +149,8 @@ public class BombermanGame extends Application {
 
             }
             myReader.close();
+            //((Brick) bricks.values().toArray()[new Random().nextInt()]).setContain(new SpeedItem());
+            bricks.get("4.0 3.0").setContain(new Portal(bricks.get("4.0 3.0")));
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -166,12 +164,15 @@ public class BombermanGame extends Application {
         bomberman.position.add(gameCamera.getxOffset() - gameCamera.getLastXOffset(),
                 gameCamera.getyOffset() - gameCamera.getLastYOffset());
         bomberman.update(gc);
-        enemies.forEach(g -> g.update(gc));
+        bombs.forEach(g -> g.update(time, gc));
     }
 
     public void render() {
         walls.forEach(g -> g.render(gc));
-        bricks.forEach(g -> g.render(gc));
+        for (Map.Entry<String, Brick> entry : bricks.entrySet()) {
+            entry.getValue().render(gc);
+
+        }
     }
 
     public static int getRealHeight() {
@@ -184,5 +185,9 @@ public class BombermanGame extends Application {
 
     public void setLastTime(long l) {
         lastTime = l;
+    }
+
+    public static Map<String, Brick> getBricks() {
+        return bricks;
     }
 }

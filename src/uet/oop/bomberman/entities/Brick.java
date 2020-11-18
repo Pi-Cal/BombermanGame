@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
+import uet.oop.bomberman.entities.Item.Item;
 import uet.oop.bomberman.graphics.Animation;
 import uet.oop.bomberman.graphics.Sprite;
 
@@ -13,11 +14,20 @@ public class Brick extends Entity {
     private Animation explode;
     private long explodeTime;
 
+    private Item contain;
+
     public Brick(Vector p, Image img) {
         super(p, img);
-        numFrame = 4;
         explode = new Animation(new Sprite[]{Sprite.brick_exploded,
                 Sprite.brick_exploded1, Sprite.brick_exploded2});
+    }
+
+    public Item getContain() {
+        return contain;
+    }
+
+    public void setContain(Item contain) {
+        this.contain = contain;
     }
 
     public boolean isExploded() {
@@ -26,6 +36,7 @@ public class Brick extends Entity {
 
     public void setExplode(boolean explode) {
         isExploded = explode;
+        explodeTime = System.nanoTime();
     }
 
     @Override
@@ -33,14 +44,16 @@ public class Brick extends Entity {
 
     }
 
-    @Override
-    public void render(GraphicsContext gc) {
-        if (isExploded) return;
-        super.render(gc);
-    }
 
     public void explode(long time, GraphicsContext graphicsContext) {
-        double t = (double) (time - explodeTime) / 1000000000;
-        explode.playAnimation(t, graphicsContext, position);
+        time -= explodeTime;
+        explode.playAnimation(time, graphicsContext, position.toNormal());
+        if (explode.isDone()) {
+            BombermanGame.map[(int) position.y / Sprite.SCALED_SIZE]
+                    [(int) position.x / Sprite.SCALED_SIZE] = ' ';
+            if (contain != null) {
+                contain.render(graphicsContext);
+            }
+        }
     }
 }

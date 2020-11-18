@@ -37,8 +37,8 @@ public class GameCamera {
 
     public void update(Bomber bomber) {
         int size = Sprite.SCALED_SIZE;
-        xOffset = bomber.position.x + Math.round(bomber.getWidth() / 2) - Math.round(width / 2) ;
-        yOffset  = bomber.position.y + Math.round(bomber.getHeight() / 2) - Math.round(height / 2);
+        xOffset = bomber.position.x + Math.round(bomber.getWidth() / 2) - Math.round(width / 2.0) ;
+        yOffset  = bomber.position.y + Math.round(bomber.getHeight() / 2) - Math.round(height / 2.0);
         if (xOffset < 0) { xOffset = 0; }
         if (yOffset < 0) { yOffset = 0; }
         if (xOffset + width > Math.round(BombermanGame.getRealWidth() * size) + 16){
@@ -47,6 +47,7 @@ public class GameCamera {
         if (yOffset + height > Math.round(BombermanGame.getRealHeight() * size) + 48){
             yOffset = Math.floor(BombermanGame.getRealHeight() * size - height) + 48;
         }
+        //System.out.println(xOffset + " and " + lastXOffset);
         lastYOffset = yOffset;
         lastXOffset = xOffset;
     }
