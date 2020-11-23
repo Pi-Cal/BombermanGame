@@ -1,8 +1,6 @@
 package uet.oop.bomberman.notEntity;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.graphics.Animation;
@@ -11,7 +9,7 @@ import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
 
-public class Bomb extends Entity {
+public class Bomb {
 
     protected int length;
     protected long startTime;
@@ -39,24 +37,23 @@ public class Bomb extends Entity {
     public Bomb(Vector p) {
         position = p;
         length = 1;
+        unexploded.setPosition(p);
         centralFlame.setPosition(p, p);
-        horizontalLeftLastFlame.setPosition(new Vector(p.x - length, p.y), p);
-        horizontalRightLastFlame.setPosition(new Vector(p.x + length, p.y), p);
-        verticalTopLastFlame.setPosition(new Vector(p.x, p.y - length), p);
-        verticalDownLastFlame.setPosition(new Vector(p.x, p.y + length), p);
+        horizontalLeftLastFlame.setPosition(new Vector(p.x - 1, p.y), p);
+        horizontalRightLastFlame.setPosition(new Vector(p.x + 1, p.y), p);
+        verticalTopLastFlame.setPosition(new Vector(p.x, p.y - 1), p);
+        verticalDownLastFlame.setPosition(new Vector(p.x, p.y + 1), p);
         startTime = System.nanoTime();
         explodeTime = (long) (startTime + 3 * Animation.NANO);
-    }
 
-    @Override
-    public void update() {
- 
     }
 
 
     public Bomb(Vector p, int flameLength) {
         position = p;
         length = flameLength;
+        unexploded = new Animation(new Sprite[]{Sprite.bomb,
+                Sprite.bomb_1, Sprite.bomb_2}, p);
         centralFlame.setPosition(p, p);
         horizontalLeftLastFlame.setPosition(new Vector(p.x - length, p.y), p);
         horizontalRightLastFlame.setPosition(new Vector(p.x + length, p.y), p);
@@ -95,6 +92,14 @@ public class Bomb extends Entity {
         explodeTime = System.nanoTime();
     }
 
+    public boolean isExploded() {
+        return isExploded;
+    }
+
+    public void setExploded(boolean exploded) {
+        isExploded = exploded;
+    }
+
     public void update(long time, GraphicsContext gc) {
         if (!isExploded) {
             normalBomb(time, gc);
@@ -103,7 +108,7 @@ public class Bomb extends Entity {
 
     public void unexplodedAnimation(long time, GraphicsContext gc) {
         time -= startTime;
-        unexploded.playContinuously(time, gc, position);
+        unexploded.playContinuously(time, gc);
     }
 
     public void explode1(long time, GraphicsContext gc) {
@@ -117,8 +122,6 @@ public class Bomb extends Entity {
         verticalMiddle.forEach(g -> g.play(finalTime, gc));
         horizontalMiddle.forEach(g -> g.play(finalTime, gc));
 
-
-
     }
 
     public void normalBomb(long time, GraphicsContext gc) {
@@ -128,6 +131,7 @@ public class Bomb extends Entity {
             }
             BombermanGame.map[(int) position.y][(int) position.x] = '0';
             unexplodedAnimation(time, gc);
+
         }
         else {
             explode1(time, gc);
@@ -138,7 +142,11 @@ public class Bomb extends Entity {
         }
     }
 
-    public boolean isExploded() {
-        return isExploded;
+    @Override
+    public boolean equals(Object v) {
+        if (v instanceof Bomb) {
+            return (this.position.x == ((Bomb) v).position.x && this.position.y == ((Bomb) v).position.y);
+        }
+        return false;
     }
 }

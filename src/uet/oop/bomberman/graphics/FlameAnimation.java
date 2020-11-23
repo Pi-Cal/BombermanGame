@@ -9,13 +9,12 @@ import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.notEntity.Bomb;
 
 import java.util.List;
-import java.util.Map;
 
 public class FlameAnimation extends Animation {
-    protected Vector position;
     protected Vector bombPosition;
     protected boolean check = false;
     protected boolean exist = true;
+    protected boolean first = true;
     public FlameAnimation(Sprite[] frames) {
         this.frames = frames;
         numFrames = frames.length;
@@ -26,10 +25,9 @@ public class FlameAnimation extends Animation {
         numFrames = frames.length;
         this.position = position;
         this.bombPosition = bombPosition;
-        check();
     }
 
-    public void playAnimation(long time, GraphicsContext graphicsContext) {
+    private void playAnimation1(long time, GraphicsContext graphicsContext) {
         double t = time / NANO;
 
         graphicsContext.fillRect(position.x * Sprite.SCALED_SIZE,
@@ -49,7 +47,8 @@ public class FlameAnimation extends Animation {
                 return ;
             }
         }
-        isDone = true;
+        if (t > delay * numFrames + delay / 3) isDone = true;
+
     }
 
     public Vector getPosition() {
@@ -59,33 +58,39 @@ public class FlameAnimation extends Animation {
     public void setPosition(Vector position, Vector bombPosition) {
         this.position = position;
         this.bombPosition = bombPosition;
-        check();
     }
 
     public void check() {
         if (position.y > 0 && position.x > 0) {
-            List<Vector> b = Vector.inLine(bombPosition, position);
-            b.remove(position);
-            for (Vector a : b) {
-                if (BombermanGame.map[(int) a.y][(int) a.x] == '*' ||
-                        BombermanGame.map[(int) a.y][(int) a.x] == '#') {
+            for (Vector a : Vector.inLine(bombPosition, position)) {
+                if (BombermanGame.map[(int) a.y][(int) a.x] != ' ') {
                     exist = false;
                     return;
                 }
             }
 
-            if (BombermanGame.map[(int) position.y][(int) position.x] != '*' &&
-                    BombermanGame.map[(int) position.y][(int) position.x] != '#') {
+            if (BombermanGame.map[(int) position.y][(int) position.x] == ' ' || position.equals(bombPosition)) {
                 check = true;
             }
         }
     }
 
     public void play(long time, GraphicsContext graphicsContext) {
-
+        if (first) {
+            check();
+            first = false;
+        }
         if(exist) {
             if (check) {
-                playAnimation(time, graphicsContext);
+                playAnimation1(time, graphicsContext);
+            } else {
+                if (BombermanGame.getBricks().get(position) != null) {
+                    Brick a = BombermanGame.getBricks().get(position);
+                    if (!a.isExploded()) {
+                        a.setExplode(true);
+                    }
+                    a.explode(System.nanoTime(), graphicsContext);
+                }
                 for (Bomb b : BombermanGame.bombs) {
                     if (b.getPosition().equals(position) && !b.getPosition().equals(bombPosition)) {
                         if (!b.isExploding()){
@@ -94,16 +99,6 @@ public class FlameAnimation extends Animation {
                         }
                     }
                 }
-            } else {
-                if (BombermanGame.getBricks().get(position.toString()) != null) {
-                    Brick a = BombermanGame.getBricks().get(position.toString());
-                    if (!a.isExploded()) {
-                        a.setExplode(true);
-                    }
-                    a.explode(System.nanoTime(), graphicsContext);
-
-                }
-
 
             }
         }

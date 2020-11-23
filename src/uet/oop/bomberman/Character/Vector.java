@@ -62,6 +62,8 @@ public class Vector {
                 list.add(new Vector(a, start.y));
             }
         }
+        list.remove(start);
+        list.remove(end);
         return list;
     }
 

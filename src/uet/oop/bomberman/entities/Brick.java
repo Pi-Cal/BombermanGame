@@ -11,7 +11,7 @@ import uet.oop.bomberman.graphics.Sprite;
 
 public class Brick extends Entity {
     private boolean isExploded = false;
-    private Animation explode;
+    protected Animation explode;
     private long explodeTime;
 
     private Item contain;
@@ -19,7 +19,11 @@ public class Brick extends Entity {
     public Brick(Vector p, Image img) {
         super(p, img);
         explode = new Animation(new Sprite[]{Sprite.brick_exploded,
-                Sprite.brick_exploded1, Sprite.brick_exploded2});
+                Sprite.brick_exploded1, Sprite.brick_exploded2}, p);
+    }
+
+    public Animation getExplode() {
+        return explode;
     }
 
     public Item getContain() {
@@ -47,7 +51,7 @@ public class Brick extends Entity {
 
     public void explode(long time, GraphicsContext graphicsContext) {
         time -= explodeTime;
-        explode.playAnimation(time, graphicsContext, position.toNormal());
+        explode.playAnimation(time, graphicsContext);
         if (explode.isDone()) {
             BombermanGame.map[(int) position.y / Sprite.SCALED_SIZE]
                     [(int) position.x / Sprite.SCALED_SIZE] = ' ';

@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.entities.*;
+import uet.oop.bomberman.entities.Item.BombItem;
 import uet.oop.bomberman.entities.Item.FlameItem;
 import uet.oop.bomberman.entities.Item.Portal;
 import uet.oop.bomberman.entities.Item.SpeedItem;
@@ -39,7 +40,7 @@ public class BombermanGame extends Application {
     private List<Entity> entities = new ArrayList<>();
     private List<Enemy> enemies = new ArrayList<>();
     private List<Entity> walls = new ArrayList<>();
-    private static Map<String, Brick> bricks = new HashMap<>();
+    private static Map<Vector, Brick> bricks = new HashMap<>();
     public static String input = "";
     public static char[][] map;
 
@@ -150,8 +151,7 @@ public class BombermanGame extends Application {
                                 break;
                             case '*' :
                                 Brick brick = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
-                                Vector p = new Vector(j, i);
-                                bricks.put(p.toString(), brick);
+                                bricks.put(new Vector(j, i), brick);
                                 break;
                             case '1' :
                                 Enemy enemy = new Enemy(new Vector(j, i), Sprite.balloom_left1.getFxImage());
@@ -167,7 +167,7 @@ public class BombermanGame extends Application {
 
             }
             myReader.close();
-            bricks.get("4.0 3.0").setContain(new Portal(bricks.get("4.0 3.0")));
+            bricks.get(new Vector(4, 3)).setContain(new Portal(bricks.get(new Vector(4, 3))));
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -180,6 +180,9 @@ public class BombermanGame extends Application {
         canvas.setTranslateY(-gameCamera.getyOffset());
         bomberman.position.add(gameCamera.getxOffset() - gameCamera.getLastXOffset(),
                 gameCamera.getyOffset() - gameCamera.getLastYOffset());
+
+        enemies.forEach(g -> g.update(gc));
+        bomberman.update(gc);
         bombs.forEach(g -> g.update(time, gc));
         int i = 0;
         while (i < bombs.size()) {
@@ -187,13 +190,12 @@ public class BombermanGame extends Application {
                 bombs.remove(i);
             } else { i++; }
         }
-        enemies.forEach(g -> g.update(gc));
-        bomberman.update(gc);
+
     }
 
     public void render() {
         walls.forEach(g -> g.render(gc));
-        for (Map.Entry<String, Brick> entry : bricks.entrySet()) {
+        for (Map.Entry<Vector, Brick> entry : bricks.entrySet()) {
             entry.getValue().render(gc);
         }
     }
@@ -210,7 +212,7 @@ public class BombermanGame extends Application {
         lastTime = l;
     }
 
-    public static Map<String, Brick> getBricks() {
+    public static Map<Vector, Brick> getBricks() {
         return bricks;
     }
 }
