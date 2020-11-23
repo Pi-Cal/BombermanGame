@@ -3,6 +3,7 @@ package uet.oop.bomberman.entities;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.Character.Vector;
+import uet.oop.bomberman.entities.Item.SpeedItem;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.BombermanGame;
 
@@ -18,6 +19,9 @@ public class Enemy extends Entity{
     private int jMap;
     private boolean dr[] = {false, false, false, false};
     private final int left = 0, right = 1, up = 2, down = 3;
+    private boolean dead = false;
+
+
 
     public Enemy(Vector position, Image img) {
         super(position, img);
@@ -32,9 +36,16 @@ public class Enemy extends Entity{
     }
 
     public void update(GraphicsContext gc) {
-        if (dr[0]) { setLeftAnimation(); }
-        else { setRightAnimation(); }
-        move();
+        if (!dead) {
+            if (dr[0]) {
+                setLeftAnimation();
+            } else {
+                setRightAnimation();
+            }
+            move();
+        } else {
+            img = Sprite.balloom_dead.getFxImage();
+        }
         gc.clearRect(lastPosition.x, lastPosition.y, Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
         render(gc);
         lastPosition.setVector(position.x, position.y);
@@ -131,14 +142,13 @@ public class Enemy extends Entity{
         dr[ran] = true;
     }
 
-    public void setDirect(int d) {
-        int ran = new Random().nextInt(4);
-        setFalse();
-        while (ran == d) {
-            setFalse();
-            ran = new Random().nextInt(4);
-        }
-        dr[ran] = true;
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
+
+    public boolean isDead() {
+        return dead;
+    }
+
 
 }

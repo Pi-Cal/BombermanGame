@@ -37,8 +37,8 @@ public class BombermanGame extends Application {
     private Canvas canvas;
     private Group root;
 
-    private List<Entity> entities = new ArrayList<>();
-    private List<Enemy> enemies = new ArrayList<>();
+    private List<Entity> items = new ArrayList<>();
+    public static List<Enemy> enemies = new ArrayList<>();
     private List<Entity> walls = new ArrayList<>();
     private static Map<Vector, Brick> bricks = new HashMap<>();
     public static String input = "";
@@ -96,20 +96,12 @@ public class BombermanGame extends Application {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                if (l - lastTime > 100000000/3) {
-                    setLastTime(l);
+                if (l - lastTime > 100000000 / bomberman.getMaxSpeed()) {
                     update(l);
-
-                }
-
-                for (Enemy e : enemies) {
-                    if (l - lastTime > 2000000000) {
-                        e.update(gc);
-                    }
+                    updateOther(l);
+                    setLastTime(l);
                 }
                 handleCollision();
-
-
             }
         };
 
@@ -124,6 +116,18 @@ public class BombermanGame extends Application {
                 bomberman.setDead(true);
                 break;
             }
+        }
+
+        int i = 0;
+        while (i < items.size()) {
+            if (bomberman.handle_1_Collision(items.get(i))) {
+                if (items.get(i) instanceof BombItem) { bomberman.setMaxBomb(bomberman.getMaxBomb() + 1); }
+                if (items.get(i) instanceof FlameItem) { bomberman.setMaxBombLength(bomberman.getMaxBombLength() + 1); }
+                if (items.get(i) instanceof SpeedItem) { bomberman.setMaxSpeed(bomberman.getMaxSpeed() * 2); }
+                items.get(i).clear(gc);
+                items.remove(i);
+            } else { i++; }
+
         }
     }
 
@@ -158,6 +162,38 @@ public class BombermanGame extends Application {
                                 enemies.add(enemy);
                                 map[i][j] = ' ';
                                 break;
+                            case '2' :
+                                Brick brick1 = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
+                                bricks.put(new Vector(j, i), brick1);
+                                SpeedItem speedItem = new SpeedItem(bricks.get(new Vector(j, i)));
+                                bricks.get(new Vector(j, i)).setContain(speedItem);
+                                items.add(speedItem);
+                                map[i][j] = '*';
+                                break;
+                            case '3' :
+                                Brick brick2 = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
+                                bricks.put(new Vector(j, i), brick2);
+                                BombItem bombItem = new BombItem(bricks.get(new Vector(j, i)));
+                                bricks.get(new Vector(j, i)).setContain(bombItem);
+                                items.add(bombItem);
+                                map[i][j] = '*';
+                                break;
+                            case '4' :
+                                Brick brick3 = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
+                                bricks.put(new Vector(j, i), brick3);
+                                FlameItem flameItem = new FlameItem(bricks.get(new Vector(j, i)));
+                                bricks.get(new Vector(j, i)).setContain(flameItem);
+                                items.add(flameItem);
+                                map[i][j] = '*';
+                                break;
+                            case '5' :
+                                Brick brick4 = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
+                                bricks.put(new Vector(j, i), brick4);
+                                Portal portal = new Portal(bricks.get(new Vector(j, i)));
+                                bricks.get(new Vector(j, i)).setContain(portal);
+                                items.add(portal);
+                                map[i][j] = '*';
+                                break;
                             default:
                                 //Grass grass = new Grass(new Vector(j, i), Sprite.grass.getFxImage());
                                 //stillObjects.put(grass.getPosition(), grass);
@@ -167,7 +203,6 @@ public class BombermanGame extends Application {
 
             }
             myReader.close();
-            bricks.get(new Vector(4, 3)).setContain(new Portal(bricks.get(new Vector(4, 3))));
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -180,9 +215,17 @@ public class BombermanGame extends Application {
         canvas.setTranslateY(-gameCamera.getyOffset());
         bomberman.position.add(gameCamera.getxOffset() - gameCamera.getLastXOffset(),
                 gameCamera.getyOffset() - gameCamera.getLastYOffset());
-
-        enemies.forEach(g -> g.update(gc));
         bomberman.update(gc);
+    }
+
+    public void updateOther(long time) {
+        enemies.forEach(g -> g.update(gc));
+        int j = 0;
+        while (j < enemies.size()) {
+            if (enemies.get(j).isDead()) {
+                enemies.remove(j);
+            } else { j++; }
+        }
         bombs.forEach(g -> g.update(time, gc));
         int i = 0;
         while (i < bombs.size()) {
@@ -190,8 +233,9 @@ public class BombermanGame extends Application {
                 bombs.remove(i);
             } else { i++; }
         }
-
     }
+
+
 
     public void render() {
         walls.forEach(g -> g.render(gc));

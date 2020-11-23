@@ -26,9 +26,9 @@ public class Bomber extends Entity {
     private boolean[] side = {false, false, false, false};
     private final byte left = 0, right = 1, up = 2, down = 3;
     private int timeDead = 0;
-    private int maxBomb = 2;
+    private int maxBomb = 1;
     private int maxSpeed = 3;
-    private int maxBombLength = 2;
+    private int maxBombLength = 1;
     public int getStep() {
         return step;
     }

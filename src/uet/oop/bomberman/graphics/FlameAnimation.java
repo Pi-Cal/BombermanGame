@@ -5,6 +5,7 @@ import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Brick;
+import uet.oop.bomberman.entities.Enemy;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.notEntity.Bomb;
 
@@ -34,8 +35,13 @@ public class FlameAnimation extends Animation {
                 position.y * Sprite.SCALED_SIZE,
                 Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
 
-        if (BombermanGame.bomberman.handle_1_Collision(new Brick(position, Sprite.grass.getFxImage()))) {
+        Entity temp = new Brick(position, Sprite.grass.getFxImage());;
+        if (BombermanGame.bomberman.handle_1_Collision(temp)) {
             BombermanGame.bomberman.setDead(true);
+        }
+
+        for (Enemy enemy : BombermanGame.enemies) {
+            if (enemy.handle_1_Collision(temp)) { enemy.setDead(true); }
         }
 
         for (int i = 0; i < numFrames; i++) {

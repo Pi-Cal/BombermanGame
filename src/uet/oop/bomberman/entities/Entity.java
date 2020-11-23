@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import uet.oop.bomberman.entities.Item.SpeedItem;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.Character.Vector;
 
@@ -69,6 +70,10 @@ public abstract class Entity {
         Image base = iv.snapshot(params, null);
 
         gc.drawImage(base, position.x, position.y);
+    }
+
+    public void clear(GraphicsContext gc) {
+        gc.clearRect(position.x, position.y, Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
     }
 
     public abstract void update();
