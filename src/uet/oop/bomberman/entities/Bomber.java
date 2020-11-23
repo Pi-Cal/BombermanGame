@@ -108,8 +108,8 @@ public class Bomber extends Entity {
             jMap = (int) Math.round(position.x / Sprite.SCALED_SIZE);
             iMap = (int) Math.round(position.y / Sprite.SCALED_SIZE);
             if (!(isMovingVertical())) {
-                if (BombermanGame.input.equals("LEFT") && side[left]) {
-                    this.velocity.add(-speed, 0);
+                if (BombermanGame.input.equals("LEFT")) {
+                    if (side[left]) { this.velocity.add(-speed, 0); }
                     switch (step % 3) {
                         case 0:
                             img = Sprite.player_left.getFxImage();
@@ -121,8 +121,8 @@ public class Bomber extends Entity {
                             img = Sprite.player_left_2.getFxImage();
                     }
                 }
-                if (BombermanGame.input.equals("RIGHT") && side[right]) {
-                    this.velocity.add(speed, 0);
+                if (BombermanGame.input.equals("RIGHT")) {
+                    if (side[right]) { this.velocity.add(speed, 0); }
                     switch (step % 3) {
                         case 0:
                             img = Sprite.player_right.getFxImage();
@@ -136,8 +136,8 @@ public class Bomber extends Entity {
                 }
             }
             if (!isMovingHorizontal()) {
-                if (BombermanGame.input.equals("UP") && side[up]) {
-                    this.velocity.add(0, -speed);
+                if (BombermanGame.input.equals("UP")) {
+                    if (side[up]) { this.velocity.add(0, -speed); }
                     switch (step % 3) {
                         case 0:
                             img = Sprite.player_up.getFxImage();
@@ -149,8 +149,8 @@ public class Bomber extends Entity {
                             img = Sprite.player_up_2.getFxImage();
                     }
                 }
-                if (BombermanGame.input.equals("DOWN") && side[down]) {
-                    this.velocity.add(0, speed);
+                if (BombermanGame.input.equals("DOWN")) {
+                    if (side[down]) { this.velocity.add(0, speed); }
                     switch (step % 3) {
                         case 0:
                             img = Sprite.player_down.getFxImage();
@@ -226,10 +226,10 @@ public class Bomber extends Entity {
     }
 
     public void deadAnimation() {
-        if (timeDead <= 8) {
+        if (timeDead <= 12) {
             this.img = Sprite.player_dead1.getFxImage();
             timeDead++;
-        } else if (timeDead <= 16) {
+        } else if (timeDead <= 24) {
             this.img = Sprite.player_dead2.getFxImage();
             timeDead++;
         } else {

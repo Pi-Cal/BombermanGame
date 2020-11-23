@@ -12,6 +12,7 @@ import java.util.Random;
 public class Enemy extends Entity{
 
     private int time;
+    private int timeDead = 0;
     private Vector lastPosition;
     private int vertical = 0;
     private int horizontal = 0;
@@ -20,6 +21,7 @@ public class Enemy extends Entity{
     private boolean dr[] = {false, false, false, false};
     private final int left = 0, right = 1, up = 2, down = 3;
     private boolean dead = false;
+    private boolean completelyDead = false;
 
 
 
@@ -44,7 +46,7 @@ public class Enemy extends Entity{
             }
             move();
         } else {
-            img = Sprite.balloom_dead.getFxImage();
+            setDeadAnimation();
         }
         gc.clearRect(lastPosition.x, lastPosition.y, Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
         render(gc);
@@ -79,6 +81,19 @@ public class Enemy extends Entity{
                 break;
         }
         time++;
+    }
+
+    public void setDeadAnimation() {
+        if (timeDead <= 6) { img = Sprite.balloom_dead.getFxImage(); }
+        else if (timeDead <= 12) { img = Sprite.mob_dead1.getFxImage(); }
+        else if (timeDead <= 18) { img = Sprite.mob_dead2.getFxImage(); }
+        else {
+            img = Sprite.mob_dead3.getFxImage();
+            if (time >= 25) {
+                completelyDead = true;
+            }
+        }
+        timeDead++;
     }
 
     public void move() {
@@ -150,5 +165,7 @@ public class Enemy extends Entity{
         return dead;
     }
 
-
+    public boolean isCompletelyDead() {
+        return completelyDead;
+    }
 }

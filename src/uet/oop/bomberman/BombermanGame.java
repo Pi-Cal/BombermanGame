@@ -25,16 +25,19 @@ import java.util.*;
 
 public class BombermanGame extends Application {
     
-    public static final int WIDTH = 20;
+    public static final int WIDTH = 24;
     public static final int HEIGHT = 16;
     private static int realHeight;
     private static int realWidth;
     private long lastTime = 0;
+    private long lastTime2 = 0;
     private int gameTime = 0;
 
 
     private GraphicsContext gc;
+    private GraphicsContext gc2;
     private Canvas canvas;
+    private Canvas canvas2;
     private Group root;
 
     private List<Entity> items = new ArrayList<>();
@@ -58,12 +61,20 @@ public class BombermanGame extends Application {
         // Tao Canvas
         createMap("levels/Level2.txt");
         canvas = new Canvas(Sprite.SCALED_SIZE * realWidth, Sprite.SCALED_SIZE * realHeight);
+        canvas2 = new Canvas(Sprite.SCALED_SIZE * realWidth, Sprite.SCALED_SIZE * 3);
+
         gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.rgb(80, 160,0));
+        gc2 = canvas2.getGraphicsContext2D();
+        gc2.setFill(Color.BLUE);
+        gc2.fillRect(0,0,Sprite.SCALED_SIZE * WIDTH,Sprite.SCALED_SIZE * 3);
+        gc2.setFill(Color.YELLOW);
+        gc2.fillOval(32,32,32,32);
 
         // Tao root container
         root = new Group();
         root.getChildren().add(canvas);
+        root.getChildren().add(canvas2);
 
         // Tao scene
         Scene scene = new Scene(root);
@@ -71,9 +82,11 @@ public class BombermanGame extends Application {
 
         // Them scene vao stage
         stage.setScene(scene);
-        stage.setHeight(HEIGHT * Sprite.SCALED_SIZE);
+        stage.setHeight((HEIGHT + 3) * Sprite.SCALED_SIZE);
         stage.setWidth(WIDTH * Sprite.SCALED_SIZE);
         stage.show();
+
+
 
         scene.setOnKeyPressed(
                 (javafx.scene.input.KeyEvent event) -> {
@@ -83,7 +96,6 @@ public class BombermanGame extends Application {
                     }
                 }
         );
-
         scene.setOnKeyReleased(
                 (javafx.scene.input.KeyEvent event) -> {
                     input = "";
@@ -93,14 +105,24 @@ public class BombermanGame extends Application {
 
         bomberman = new Bomber(new Vector(1,1), Sprite.player_right.getFxImage());
         gameTime = 0;
+
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                if (l - lastTime > 100000000 / bomberman.getMaxSpeed()) {
+                if (l - lastTime > 100000000 / bomberman.getMaxSpeed() && !bomberman.isDead()) {
                     update(l);
-                    updateOther(l);
                     setLastTime(l);
                 }
+
+                if (l - lastTime2 > 100000000 / 3) {
+                    if (bomberman.isDead()) {
+                        update(l);
+                        setLastTime(l);
+                    }
+                    updateOther(l);
+                    lastTime2 = l;
+                }
+
                 handleCollision();
             }
         };
@@ -212,7 +234,7 @@ public class BombermanGame extends Application {
     public void update(long time) {
         gameCamera.update(bomberman);
         canvas.setTranslateX(-gameCamera.getxOffset());
-        canvas.setTranslateY(-gameCamera.getyOffset());
+        canvas.setTranslateY(-gameCamera.getyOffset() + Sprite.SCALED_SIZE * 3);
         bomberman.position.add(gameCamera.getxOffset() - gameCamera.getLastXOffset(),
                 gameCamera.getyOffset() - gameCamera.getLastYOffset());
         bomberman.update(gc);
@@ -222,7 +244,8 @@ public class BombermanGame extends Application {
         enemies.forEach(g -> g.update(gc));
         int j = 0;
         while (j < enemies.size()) {
-            if (enemies.get(j).isDead()) {
+            if (enemies.get(j).isCompletelyDead()) {
+                enemies.get(j).clear(gc);
                 enemies.remove(j);
             } else { j++; }
         }
@@ -259,4 +282,5 @@ public class BombermanGame extends Application {
     public static Map<Vector, Brick> getBricks() {
         return bricks;
     }
+
 }
