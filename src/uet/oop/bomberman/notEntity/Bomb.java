@@ -2,6 +2,7 @@ package uet.oop.bomberman.notEntity;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.graphics.Animation;
@@ -10,7 +11,7 @@ import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
 
-public class Bomb{
+public class Bomb extends Entity {
 
     protected int length;
     protected long startTime;
@@ -45,6 +46,11 @@ public class Bomb{
         verticalDownLastFlame.setPosition(new Vector(p.x, p.y + length), p);
         startTime = System.nanoTime();
         explodeTime = (long) (startTime + 3 * Animation.NANO);
+    }
+
+    @Override
+    public void update() {
+ 
     }
 
 
@@ -132,4 +138,7 @@ public class Bomb{
         }
     }
 
+    public boolean isExploded() {
+        return isExploded;
+    }
 }

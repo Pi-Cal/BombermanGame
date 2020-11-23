@@ -29,19 +29,21 @@ public class BombermanGame extends Application {
     private static int realHeight;
     private static int realWidth;
     private long lastTime = 0;
+    private int gameTime = 0;
+
 
     private GraphicsContext gc;
     private Canvas canvas;
     private Group root;
 
     private List<Entity> entities = new ArrayList<>();
+    private List<Enemy> enemies = new ArrayList<>();
     private List<Entity> walls = new ArrayList<>();
     private static Map<String, Brick> bricks = new HashMap<>();
-    private Map<Vector, Entity> stillObjects = new HashMap<Vector, Entity>();
-    public static String inputLists = "";
+    public static String input = "";
     public static char[][] map;
 
-    Bomber bomberman;
+    public static Bomber bomberman;
     public static List<Bomb> bombs = new ArrayList<>();
     GameCamera gameCamera = new GameCamera(0,0);
 
@@ -75,22 +77,21 @@ public class BombermanGame extends Application {
         scene.setOnKeyPressed(
                 (javafx.scene.input.KeyEvent event) -> {
                     String keyName = event.getCode().toString();
-                    if ( !inputLists.equals(keyName) ) {
-                        inputLists = keyName;
+                    if ( !input.equals(keyName) ) {
+                        input = keyName;
                     }
                 }
         );
 
         scene.setOnKeyReleased(
                 (javafx.scene.input.KeyEvent event) -> {
-                    String keyName = event.getCode().toString();
-                    inputLists = "";
+                    input = "";
                 }
         );
 
 
         bomberman = new Bomber(new Vector(1,1), Sprite.player_right.getFxImage());
-        //bomb = new Bomb(new Vector(3, 3));
+        gameTime = 0;
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -99,7 +100,13 @@ public class BombermanGame extends Application {
                     update(l);
 
                 }
-                handleEvent();
+
+                for (Enemy e : enemies) {
+                    if (l - lastTime > 2000000000) {
+                        e.update(gc);
+                    }
+                }
+                handleCollision();
 
 
             }
@@ -109,8 +116,14 @@ public class BombermanGame extends Application {
         timer.start();
     }
 
-    public void handleEvent() {
+    public void handleCollision() {
         bomberman.handleCollision();
+        for (Enemy enemy : enemies) {
+            if (bomberman.handle_1_Collision(enemy)) {
+                bomberman.setDead(true);
+                break;
+            }
+        }
     }
 
     public void createMap(String filePath) {
@@ -140,6 +153,11 @@ public class BombermanGame extends Application {
                                 Vector p = new Vector(j, i);
                                 bricks.put(p.toString(), brick);
                                 break;
+                            case '1' :
+                                Enemy enemy = new Enemy(new Vector(j, i), Sprite.balloom_left1.getFxImage());
+                                enemies.add(enemy);
+                                map[i][j] = ' ';
+                                break;
                             default:
                                 //Grass grass = new Grass(new Vector(j, i), Sprite.grass.getFxImage());
                                 //stillObjects.put(grass.getPosition(), grass);
@@ -149,7 +167,6 @@ public class BombermanGame extends Application {
 
             }
             myReader.close();
-            //((Brick) bricks.values().toArray()[new Random().nextInt()]).setContain(new SpeedItem());
             bricks.get("4.0 3.0").setContain(new Portal(bricks.get("4.0 3.0")));
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
@@ -163,15 +180,21 @@ public class BombermanGame extends Application {
         canvas.setTranslateY(-gameCamera.getyOffset());
         bomberman.position.add(gameCamera.getxOffset() - gameCamera.getLastXOffset(),
                 gameCamera.getyOffset() - gameCamera.getLastYOffset());
-        bomberman.update(gc);
         bombs.forEach(g -> g.update(time, gc));
+        int i = 0;
+        while (i < bombs.size()) {
+            if (bombs.get(i).isExploded()) {
+                bombs.remove(i);
+            } else { i++; }
+        }
+        enemies.forEach(g -> g.update(gc));
+        bomberman.update(gc);
     }
 
     public void render() {
         walls.forEach(g -> g.render(gc));
         for (Map.Entry<String, Brick> entry : bricks.entrySet()) {
             entry.getValue().render(gc);
-
         }
     }
 

@@ -3,7 +3,9 @@ package uet.oop.bomberman.graphics;
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
+import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Brick;
+import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.notEntity.Bomb;
 
 import java.util.List;
@@ -33,6 +35,11 @@ public class FlameAnimation extends Animation {
         graphicsContext.fillRect(position.x * Sprite.SCALED_SIZE,
                 position.y * Sprite.SCALED_SIZE,
                 Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
+
+        if (BombermanGame.bomberman.handle_1_Collision(new Brick(position, Sprite.grass.getFxImage()))) {
+            BombermanGame.bomberman.setDead(true);
+        }
+
         for (int i = 0; i < numFrames; i++) {
             if (t < (i + 1) * delay && t >= i * delay) {
                 graphicsContext.drawImage(frames[i].getFxImage(),

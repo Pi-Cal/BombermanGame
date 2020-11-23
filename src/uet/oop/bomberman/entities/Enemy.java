@@ -103,7 +103,7 @@ public class Enemy extends Entity{
             horizontal = 0;
             vertical = 4;
         }
-        if ( check == '*' || check == '#' ) {
+        if ( check == '*' || check == '#' || check == '0') {
             for (int i = 0; i < 4; i++) {
                 if (dr[i]) {
                     setFalse();

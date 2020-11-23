@@ -75,9 +75,9 @@ public abstract class Entity {
 
     public boolean handle_1_Collision(Entity other) {
         //if (other instanceof Grass) { return false; }
-        return Math.round(position.x + width) >= Math.round(other.position.x) &&
-                Math.round(position.x) <= Math.round(other.position.x + width) &&
-                Math.round(position.y + height) >= Math.round(other.position.y) &&
-                Math.round(position.y) <= Math.round(other.position.y + height);
+        return Math.round(position.x + width) > Math.round(other.position.x) &&
+                Math.round(position.x) < Math.round(other.position.x + width) &&
+                Math.round(position.y + height) > Math.round(other.position.y) &&
+                Math.round(position.y) < Math.round(other.position.y + height);
     }
 }

@@ -11,6 +11,7 @@ import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.notEntity.Bomb;
 
 import javax.naming.ldap.Control;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,41 @@ public class Bomber extends Entity {
     private double speed = 120.0 * 8;
     private boolean[] side = {false, false, false, false};
     private final byte left = 0, right = 1, up = 2, down = 3;
+    private int timeDead = 0;
+    private int maxBomb = 2;
+    private int maxSpeed = 3;
+    private int maxBombLength = 2;
+    public int getStep() {
+        return step;
+    }
+
+    public void setStep(int step) {
+        this.step = step;
+    }
+
+    public int getMaxBomb() {
+        return maxBomb;
+    }
+
+    public void setMaxBomb(int maxBomb) {
+        this.maxBomb = maxBomb;
+    }
+
+    public int getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public void setMaxSpeed(int maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public int getMaxBombLength() {
+        return maxBombLength;
+    }
+
+    public void setMaxBombLength(int maxBombLength) {
+        this.maxBombLength = maxBombLength;
+    }
 
     private void setFalse() {
         for (int i = 0; i < 4; i++) {
@@ -68,73 +104,82 @@ public class Bomber extends Entity {
     public void update() {}
 
     public void update(GraphicsContext gc) {
-        jMap = (int) Math.round(position.x / Sprite.SCALED_SIZE);
-        iMap = (int) Math.round(position.y / Sprite.SCALED_SIZE);
-        if (!(isMovingVertical())) {
-            if (BombermanGame.inputLists.equals("LEFT") && side[left]) {
-                this.velocity.add(-speed, 0);
-                switch (step % 3) {
-                    case 0:
-                        img = Sprite.player_left.getFxImage();
-                        break;
-                    case 1:
-                        img = Sprite.player_left_1.getFxImage();
-                        break;
-                    default:
-                        img = Sprite.player_left_2.getFxImage();
+        if (!dead) {
+            jMap = (int) Math.round(position.x / Sprite.SCALED_SIZE);
+            iMap = (int) Math.round(position.y / Sprite.SCALED_SIZE);
+            if (!(isMovingVertical())) {
+                if (BombermanGame.input.equals("LEFT") && side[left]) {
+                    this.velocity.add(-speed, 0);
+                    switch (step % 3) {
+                        case 0:
+                            img = Sprite.player_left.getFxImage();
+                            break;
+                        case 1:
+                            img = Sprite.player_left_1.getFxImage();
+                            break;
+                        default:
+                            img = Sprite.player_left_2.getFxImage();
+                    }
+                }
+                if (BombermanGame.input.equals("RIGHT") && side[right]) {
+                    this.velocity.add(speed, 0);
+                    switch (step % 3) {
+                        case 0:
+                            img = Sprite.player_right.getFxImage();
+                            break;
+                        case 1:
+                            img = Sprite.player_right_1.getFxImage();
+                            break;
+                        default:
+                            img = Sprite.player_right_2.getFxImage();
+                    }
                 }
             }
-            if (BombermanGame.inputLists.equals("RIGHT") && side[right]) {
-                this.velocity.add(speed, 0);
-                switch (step % 3) {
-                    case 0:
-                        img = Sprite.player_right.getFxImage();
-                        break;
-                    case 1:
-                        img = Sprite.player_right_1.getFxImage();
-                        break;
-                    default:
-                        img = Sprite.player_right_2.getFxImage();
+            if (!isMovingHorizontal()) {
+                if (BombermanGame.input.equals("UP") && side[up]) {
+                    this.velocity.add(0, -speed);
+                    switch (step % 3) {
+                        case 0:
+                            img = Sprite.player_up.getFxImage();
+                            break;
+                        case 1:
+                            img = Sprite.player_up_1.getFxImage();
+                            break;
+                        default:
+                            img = Sprite.player_up_2.getFxImage();
+                    }
+                }
+                if (BombermanGame.input.equals("DOWN") && side[down]) {
+                    this.velocity.add(0, speed);
+                    switch (step % 3) {
+                        case 0:
+                            img = Sprite.player_down.getFxImage();
+                            break;
+                        case 1:
+                            img = Sprite.player_down_1.getFxImage();
+                            break;
+                        default:
+                            img = Sprite.player_down_2.getFxImage();
+                    }
                 }
             }
+            Vector checkPos = position.toNormal();
+            if (BombermanGame.input.equals("SPACE") &&
+                    BombermanGame.map[(int)checkPos.y][(int) checkPos.x] != '0') {
+                if (BombermanGame.bombs.size() < maxBomb) {
+                    BombermanGame.bombs.add(new Bomb(position.toNormal().round(), maxBombLength));
+                }
+            }
+            velocity.multiply(1 / 120.0);
+            position.add(this.getVelocity());
+            step++;
+        } else {
+            deadAnimation();
         }
-        if (!isMovingHorizontal()) {
-            if (BombermanGame.inputLists.equals("UP") && side[up]) {
-                this.velocity.add(0, -speed);
-                switch (step % 3) {
-                    case 0:
-                        img = Sprite.player_up.getFxImage();
-                        break;
-                    case 1:
-                        img = Sprite.player_up_1.getFxImage();
-                        break;
-                    default:
-                        img = Sprite.player_up_2.getFxImage();
-                }
-            }
-            if (BombermanGame.inputLists.equals("DOWN") && side[down]) {
-                this.velocity.add(0, speed);
-                switch (step % 3) {
-                    case 0:
-                        img = Sprite.player_down.getFxImage();
-                        break;
-                    case 1:
-                        img = Sprite.player_down_1.getFxImage();
-                        break;
-                    default:
-                        img = Sprite.player_down_2.getFxImage();
-                }
-            }
-        }
-        if (BombermanGame.inputLists.equals("SPACE")) {
-            BombermanGame.bombs.add(new Bomb(position.toNormal().round(), 2));
-        }
-        velocity.multiply( 1/120.0);
-        position.add(this.getVelocity());
-        step++;
         clear(gc);
         render(gc);
     }
+
 
     public void clear(GraphicsContext gc) {
         gc.clearRect(lastPosition.x, lastPosition.y, Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
@@ -180,4 +225,15 @@ public class Bomber extends Entity {
         }
     }
 
+    public void deadAnimation() {
+        if (timeDead <= 8) {
+            this.img = Sprite.player_dead1.getFxImage();
+            timeDead++;
+        } else if (timeDead <= 16) {
+            this.img = Sprite.player_dead2.getFxImage();
+            timeDead++;
+        } else {
+            this.img = Sprite.player_dead2.getFxImage();
+        }
+    }
 }
