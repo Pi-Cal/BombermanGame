@@ -6,8 +6,11 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.scene.control.Label;
+
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.Character.Timing;
 import uet.oop.bomberman.entities.*;
@@ -41,6 +44,7 @@ public class BombermanGame extends Application {
     private Canvas canvas;
     private Canvas canvas2;
     private Group root;
+    private static int enemiesNeedingKill;
 
     private List<Item> items = new ArrayList<>();
     public static List<Enemy> enemies = new ArrayList<>();
@@ -66,14 +70,21 @@ public class BombermanGame extends Application {
         canvas = new Canvas(Sprite.SCALED_SIZE * realWidth, Sprite.SCALED_SIZE * realHeight);
         canvas2 = new Canvas(Sprite.SCALED_SIZE * realWidth, Sprite.SCALED_SIZE * 3);
 
+
         gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.rgb(80, 160,0));
+
         gc2 = canvas2.getGraphicsContext2D();
+        gc2.clearRect(0, 0, BombermanGame.WIDTH * Sprite.SCALED_SIZE, 3 * Sprite.SCALED_SIZE);
+        gc2.setFill(Color.rgb(179,179,179));
+        gc2.fillRect(0,0, Sprite.SCALED_SIZE * BombermanGame.WIDTH,Sprite.SCALED_SIZE * 3);
 
         // Tao root container
         root = new Group();
         root.getChildren().add(canvas);
         root.getChildren().add(canvas2);
+        root.getChildren().add(timing.getTimeLabel());
+        root.getChildren().add(timing.getEnemyKilled());
 
         // Tao scene
         Scene scene = new Scene(root);
@@ -124,7 +135,7 @@ public class BombermanGame extends Application {
                     }
 
                     if (l - lastTime3 > 1000000000) {
-                        timing.update(gc2);
+                        timing.update();
                         bomberman.updateItem();
                         lastTime3 = l;
                     }
@@ -149,6 +160,7 @@ public class BombermanGame extends Application {
                 realHeight = height;
                 int width = myReader.nextInt();
                 realWidth = width;
+                enemiesNeedingKill = myReader.nextInt();
                 map = new char[height][width];
                 String row = myReader.nextLine();
                 for (int i = 0; i < height; i++ ) {
@@ -254,6 +266,7 @@ public class BombermanGame extends Application {
         int j = 0;
         while (j < enemies.size()) {
             if (enemies.get(j).isCompletelyDead()) {
+                timing.incEnemyKilled();
                 enemies.get(j).clear(gc);
                 enemies.remove(j);
             } else { j++; }
@@ -292,4 +305,7 @@ public class BombermanGame extends Application {
         return bricks;
     }
 
+    public static int getEnemiesNeedingKill() {
+        return enemiesNeedingKill;
+    }
 }

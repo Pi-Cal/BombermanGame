@@ -203,6 +203,10 @@ public class Bomber extends Entity {
                     BombermanGame.bombs.add(new Bomb(position.toNormal().round(), maxBombLength));
                 }
             }
+
+            if(BombermanGame.input.equals("")) {
+                img = Sprite.player_down.getFxImage();
+            }
             velocity.multiply(1.0/120);
             position.add(this.getVelocity());
             step++;

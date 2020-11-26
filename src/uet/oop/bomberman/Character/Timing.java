@@ -3,18 +3,38 @@ package uet.oop.bomberman.Character;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.control.Label;
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Timing {
-    Vector position;
-    int timeInt;
-    int size;
+    private Vector position;
+    private int timeInt;
+    private int size;
+    private int enemyKilledInt;
+
+    private Label time;
+    private Label enemyKilled;
 
     public Timing() {
         timeInt = 200;
         size = 50;
         position = new Vector(80,60);
+        time = new Label(timeInt + "");
+        enemyKilledInt = 0;
+        enemyKilled = new Label("E:" + enemyKilledInt + "/" + BombermanGame.getEnemiesNeedingKill());
+
+        time.setTextFill(Color.WHITE);
+        time.setFont(Font.font("Consolas", size));
+        time.setTranslateX(80);
+        time.setTranslateY(23);
+
+        enemyKilled.setTextFill(Color.WHITE);
+        enemyKilled.setFont(Font.font("Consolas", size));
+        enemyKilled.setTranslateX(300);
+        enemyKilled.setTranslateY(23);
+
     }
 
     public String getTime() {
@@ -27,15 +47,23 @@ public class Timing {
         this.timeInt = timeInt;
     }
 
-    public void update(GraphicsContext gc) {
-        gc.clearRect(0, 0, BombermanGame.WIDTH * Sprite.SCALED_SIZE, 3 * Sprite.SCALED_SIZE);
-        gc.setFill(Color.rgb(179,179,179));
-        gc.fillRect(0,0, Sprite.SCALED_SIZE * BombermanGame.WIDTH,Sprite.SCALED_SIZE * 3);
-        gc.setFont(Font.font("Consolas", size));
-        gc.setFill(Color.WHITE);
-        gc.fillText(getTime(), position.x, position.y);
+    public void update() {
+        time.setText(timeInt + "");
+        enemyKilled.setText("E:" + enemyKilledInt + "/" + BombermanGame.getEnemiesNeedingKill());
         if (timeInt >= 0) {
             timeInt--;
         }
+    }
+
+    public Label getTimeLabel() {
+        return time;
+    }
+
+    public Label getEnemyKilled() {
+        return enemyKilled;
+    }
+
+    public void incEnemyKilled() {
+        enemyKilledInt++;
     }
 }
