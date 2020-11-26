@@ -7,10 +7,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
+import uet.oop.bomberman.entities.Item.BombItem;
+import uet.oop.bomberman.entities.Item.FlameItem;
+import uet.oop.bomberman.entities.Item.Item;
+import uet.oop.bomberman.entities.Item.SpeedItem;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.notEntity.Bomb;
 
 import javax.naming.ldap.Control;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,20 +27,29 @@ public class Bomber extends Entity {
     private int jMap;
     private Vector lastPosition;
     private boolean dead = false;
-    private double speed = 120.0 * 8;
+    private double speed = 120 * 8;
     private boolean[] side = {false, false, false, false};
     private final byte left = 0, right = 1, up = 2, down = 3;
     private int timeDead = 0;
     private int maxBomb = 1;
     private int maxSpeed = 3;
     private int maxBombLength = 1;
-    public int getStep() {
-        return step;
+    private ArrayList<Item> bombItems = new ArrayList<>();
+    private ArrayList<Item> speedItems = new ArrayList<>();
+    private ArrayList<Item> flameItems = new ArrayList<>();
+
+    public void addBomb(Item b) {
+        bombItems.add(b);
     }
 
-    public void setStep(int step) {
-        this.step = step;
+    public void addSpeed(Item s) {
+        speedItems.add(s);
     }
+
+    public void addFlame(Item f) {
+        flameItems.add(f);
+    }
+
 
     public int getMaxBomb() {
         return maxBomb;
@@ -102,6 +116,27 @@ public class Bomber extends Entity {
 
     @Override
     public void update() {}
+
+    public void updateItem() {
+        update1TypeOfItem(bombItems);
+        update1TypeOfItem(flameItems);
+        update1TypeOfItem(speedItems);
+        System.out.println("---");
+    }
+
+    public void update1TypeOfItem(ArrayList<Item> arrayList) {
+        int i = 0;
+        System.out.println(arrayList.size());
+        while (i<arrayList.size()) {
+            Item temp = arrayList.get(i);
+            if (temp.getTime() == 0) { arrayList.remove(i); }
+            else {
+                temp.decTime();
+                i++;
+            }
+        }
+    }
+
 
     public void update(GraphicsContext gc) {
         if (!dead) {
@@ -170,9 +205,14 @@ public class Bomber extends Entity {
                     BombermanGame.bombs.add(new Bomb(position.toNormal().round(), maxBombLength));
                 }
             }
-            velocity.multiply(1 / 120.0);
+            velocity.multiply(1.0/120);
             position.add(this.getVelocity());
             step++;
+
+            maxBombLength = 1 + flameItems.size();
+            maxSpeed = 3 * (speedItems.size() + 1);
+            maxBomb = 1 + bombItems.size();
+
         } else {
             deadAnimation();
         }
@@ -224,6 +264,7 @@ public class Bomber extends Entity {
             side[left] = true;
         }
     }
+
 
     public void deadAnimation() {
         if (timeDead <= 12) {

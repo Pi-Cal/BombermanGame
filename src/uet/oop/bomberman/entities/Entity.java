@@ -78,6 +78,7 @@ public abstract class Entity {
 
     public abstract void update();
 
+
     public boolean handle_1_Collision(Entity other) {
         //if (other instanceof Grass) { return false; }
         return Math.round(position.x + width) > Math.round(other.position.x) &&

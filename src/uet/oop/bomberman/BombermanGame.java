@@ -9,29 +9,31 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import uet.oop.bomberman.Character.Vector;
+import uet.oop.bomberman.Character.Timing;
 import uet.oop.bomberman.entities.*;
-import uet.oop.bomberman.entities.Item.BombItem;
-import uet.oop.bomberman.entities.Item.FlameItem;
-import uet.oop.bomberman.entities.Item.Portal;
-import uet.oop.bomberman.entities.Item.SpeedItem;
+import uet.oop.bomberman.entities.Item.*;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.Camera.GameCamera;
 import uet.oop.bomberman.notEntity.Bomb;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 
 import java.util.*;
+import java.util.List;
 
 public class BombermanGame extends Application {
-    
+
     public static final int WIDTH = 24;
     public static final int HEIGHT = 16;
     private static int realHeight;
     private static int realWidth;
     private long lastTime = 0;
     private long lastTime2 = 0;
-    private int gameTime = 0;
+    private long lastTime3 = 0;
+    private boolean isRunning = false;
+    private boolean gameOver = false;
 
 
     private GraphicsContext gc;
@@ -40,7 +42,7 @@ public class BombermanGame extends Application {
     private Canvas canvas2;
     private Group root;
 
-    private List<Entity> items = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
     public static List<Enemy> enemies = new ArrayList<>();
     private List<Entity> walls = new ArrayList<>();
     private static Map<Vector, Brick> bricks = new HashMap<>();
@@ -49,7 +51,8 @@ public class BombermanGame extends Application {
 
     public static Bomber bomberman;
     public static List<Bomb> bombs = new ArrayList<>();
-    GameCamera gameCamera = new GameCamera(0,0);
+    private GameCamera gameCamera = new GameCamera(0,0);
+    private Timing timing = new Timing();
 
 
     public static void main(String[] args) {
@@ -66,10 +69,6 @@ public class BombermanGame extends Application {
         gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.rgb(80, 160,0));
         gc2 = canvas2.getGraphicsContext2D();
-        gc2.setFill(Color.BLUE);
-        gc2.fillRect(0,0,Sprite.SCALED_SIZE * WIDTH,Sprite.SCALED_SIZE * 3);
-        gc2.setFill(Color.YELLOW);
-        gc2.fillOval(32,32,32,32);
 
         // Tao root container
         root = new Group();
@@ -104,53 +103,39 @@ public class BombermanGame extends Application {
 
 
         bomberman = new Bomber(new Vector(1,1), Sprite.player_right.getFxImage());
-        gameTime = 0;
+        isRunning = true;
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                if (l - lastTime > 100000000 / bomberman.getMaxSpeed() && !bomberman.isDead()) {
-                    update(l);
-                    setLastTime(l);
-                }
-
-                if (l - lastTime2 > 100000000 / 3) {
-                    if (bomberman.isDead()) {
+                if (!gameOver) {
+                    if (l - lastTime > 100000000 / bomberman.getMaxSpeed() && !bomberman.isDead()) {
                         update(l);
                         setLastTime(l);
                     }
-                    updateOther(l);
-                    lastTime2 = l;
-                }
 
-                handleCollision();
+                    if (l - lastTime2 > 100000000 / 3) {
+                        if (bomberman.isDead()) {
+                            update(l);
+                            setLastTime(l);
+                        }
+                        updateOther(l);
+                        lastTime2 = l;
+                    }
+
+                    if (l - lastTime3 > 1000000000) {
+                        timing.update(gc2);
+                        bomberman.updateItem();
+                        lastTime3 = l;
+                    }
+
+                    handleCollision();
+                }
             }
         };
 
         render();
         timer.start();
-    }
-
-    public void handleCollision() {
-        bomberman.handleCollision();
-        for (Enemy enemy : enemies) {
-            if (bomberman.handle_1_Collision(enemy)) {
-                bomberman.setDead(true);
-                break;
-            }
-        }
-
-        int i = 0;
-        while (i < items.size()) {
-            if (bomberman.handle_1_Collision(items.get(i))) {
-                if (items.get(i) instanceof BombItem) { bomberman.setMaxBomb(bomberman.getMaxBomb() + 1); }
-                if (items.get(i) instanceof FlameItem) { bomberman.setMaxBombLength(bomberman.getMaxBombLength() + 1); }
-                if (items.get(i) instanceof SpeedItem) { bomberman.setMaxSpeed(bomberman.getMaxSpeed() * 2); }
-                items.get(i).clear(gc);
-                items.remove(i);
-            } else { i++; }
-
-        }
     }
 
     public void createMap(String filePath) {
@@ -229,6 +214,30 @@ public class BombermanGame extends Application {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
+    }
+
+    public void handleCollision() {
+        bomberman.handleCollision();
+        for (Enemy enemy : enemies) {
+            if (bomberman.handle_1_Collision(enemy)) {
+                bomberman.setDead(true);
+                break;
+            }
+        }
+
+        int i = 0;
+        while (i < items.size()) {
+            if (bomberman.handle_1_Collision(items.get(i))) {
+                if (items.get(i) instanceof BombItem) { bomberman.addBomb(items.get(i)); }
+                else if (items.get(i) instanceof FlameItem) { bomberman.addFlame(items.get(i)); }
+                else if (items.get(i) instanceof SpeedItem) { bomberman.addSpeed(items.get(i)); }
+                items.get(i).clear(gc);
+                items.remove(i);
+            } else { i++; }
+
+        }
+
+        if (timing.getTimeInt() == -1) { gameOver = true; }
     }
 
     public void update(long time) {
