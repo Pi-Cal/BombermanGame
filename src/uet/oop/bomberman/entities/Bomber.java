@@ -121,12 +121,10 @@ public class Bomber extends Entity {
         update1TypeOfItem(bombItems);
         update1TypeOfItem(flameItems);
         update1TypeOfItem(speedItems);
-        System.out.println("---");
     }
 
     public void update1TypeOfItem(ArrayList<Item> arrayList) {
         int i = 0;
-        System.out.println(arrayList.size());
         while (i<arrayList.size()) {
             Item temp = arrayList.get(i);
             if (temp.getTime() == 0) { arrayList.remove(i); }
@@ -274,7 +272,7 @@ public class Bomber extends Entity {
             this.img = Sprite.player_dead2.getFxImage();
             timeDead++;
         } else {
-            this.img = Sprite.player_dead2.getFxImage();
+            this.img = Sprite.player_dead3.getFxImage();
         }
     }
 }
