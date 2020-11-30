@@ -2,6 +2,7 @@ package uet.oop.bomberman.notEntity;
 
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.Character.Sound;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.graphics.Animation;
 import uet.oop.bomberman.graphics.FlameAnimation;
@@ -120,6 +121,7 @@ public class Bomb {
         long finalTime = time;
         verticalMiddle.forEach(g -> g.play(finalTime, gc));
         horizontalMiddle.forEach(g -> g.play(finalTime, gc));
+        Sound.explore.start();
 
     }
 

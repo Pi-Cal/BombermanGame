@@ -1,24 +1,15 @@
 package uet.oop.bomberman.entities;
 
-import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
-import uet.oop.bomberman.entities.Item.BombItem;
-import uet.oop.bomberman.entities.Item.FlameItem;
 import uet.oop.bomberman.entities.Item.Item;
-import uet.oop.bomberman.entities.Item.SpeedItem;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.notEntity.Bomb;
+import uet.oop.bomberman.Character.Sound;
 
-import javax.naming.ldap.Control;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Bomber extends Entity {
 
@@ -28,7 +19,7 @@ public class Bomber extends Entity {
     private Vector lastPosition;
     private boolean dead = false;
     private double speed = 120 * 8;
-    private boolean[] side = {false, false, false, false};
+    private final boolean[] side = {false, false, false, false};
     private final byte left = 0, right = 1, up = 2, down = 3;
     private int timeDead = 0;
     private int maxBomb = 1;
@@ -39,7 +30,6 @@ public class Bomber extends Entity {
     private ArrayList<Item> flameItems = new ArrayList<>();
 
     public int woop = 0;
-
 
     public void addBomb(Item b) {
         bombItems.add(b);
@@ -53,30 +43,10 @@ public class Bomber extends Entity {
         flameItems.add(f);
     }
 
-
-    public int getMaxBomb() {
-        return maxBomb;
-    }
-
-    public void setMaxBomb(int maxBomb) {
-        this.maxBomb = maxBomb;
-    }
-
     public int getMaxSpeed() {
         return maxSpeed;
     }
 
-    public void setMaxSpeed(int maxSpeed) {
-        this.maxSpeed = maxSpeed;
-    }
-
-    public int getMaxBombLength() {
-        return maxBombLength;
-    }
-
-    public void setMaxBombLength(int maxBombLength) {
-        this.maxBombLength = maxBombLength;
-    }
 
     private void setFalse() {
         for (int i = 0; i < 4; i++) {
@@ -145,7 +115,10 @@ public class Bomber extends Entity {
             iMap = (int) Math.round(position.y / Sprite.SCALED_SIZE);
             if (!(isMovingVertical())) {
                 if (BombermanGame.input.equals("LEFT")) {
-                    if (side[left]) { this.velocity.add(-speed, 0); }
+                    if (side[left]) {
+                        this.velocity.add(-speed, 0);
+                        Sound.player_move.start();
+                    }
                     switch (step % 3) {
                         case 0:
                             img = Sprite.player_left.getFxImage();
@@ -158,7 +131,10 @@ public class Bomber extends Entity {
                     }
                 }
                 if (BombermanGame.input.equals("RIGHT")) {
-                    if (side[right]) { this.velocity.add(speed, 0); }
+                    if (side[right]) {
+                        this.velocity.add(speed, 0);
+                        Sound.player_move.start();
+                    }
                     switch (step % 3) {
                         case 0:
                             img = Sprite.player_right.getFxImage();
@@ -173,7 +149,10 @@ public class Bomber extends Entity {
             }
             if (!isMovingHorizontal()) {
                 if (BombermanGame.input.equals("UP")) {
-                    if (side[up]) { this.velocity.add(0, -speed); }
+                    if (side[up]) {
+                        this.velocity.add(0, -speed);
+                        Sound.player_move.start();
+                    }
                     switch (step % 3) {
                         case 0:
                             img = Sprite.player_up.getFxImage();
@@ -186,7 +165,10 @@ public class Bomber extends Entity {
                     }
                 }
                 if (BombermanGame.input.equals("DOWN")) {
-                    if (side[down]) { this.velocity.add(0, speed); }
+                    if (side[down]) {
+                        this.velocity.add(0, speed);
+                        Sound.player_move.start();
+                    }
                     switch (step % 3) {
                         case 0:
                             img = Sprite.player_down.getFxImage();
@@ -220,6 +202,10 @@ public class Bomber extends Entity {
 
         } else {
             deadAnimation();
+            Sound.player_dead.start();
+        }
+        if (step >= 9) {
+            step = 0;
         }
         clear(gc);
         render(gc);
