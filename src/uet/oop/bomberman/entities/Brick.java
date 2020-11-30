@@ -13,13 +13,13 @@ public class Brick extends Entity {
     private boolean isExploded = false;
     protected Animation explode;
     private long explodeTime;
-
+    private double animationDelay = 0.15;
     private Item contain;
 
     public Brick(Vector p, Image img) {
         super(p, img);
         explode = new Animation(new Sprite[]{Sprite.brick_exploded,
-                Sprite.brick_exploded1, Sprite.brick_exploded2}, p);
+                Sprite.brick_exploded1, Sprite.brick_exploded2}, p, animationDelay);
     }
 
     public Animation getExplode() {

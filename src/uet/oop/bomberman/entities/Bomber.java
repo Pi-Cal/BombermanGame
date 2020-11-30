@@ -38,6 +38,9 @@ public class Bomber extends Entity {
     private ArrayList<Item> speedItems = new ArrayList<>();
     private ArrayList<Item> flameItems = new ArrayList<>();
 
+    public int woop = 0;
+
+
     public void addBomb(Item b) {
         bombItems.add(b);
     }
@@ -211,9 +214,9 @@ public class Bomber extends Entity {
             position.add(this.getVelocity());
             step++;
 
-            maxBombLength = 1 + flameItems.size();
+            maxBombLength = 2 + flameItems.size();
             maxSpeed = 3 * (speedItems.size() + 1);
-            maxBomb = 1 + bombItems.size();
+            maxBomb = 10 + bombItems.size();
 
         } else {
             deadAnimation();
@@ -229,7 +232,9 @@ public class Bomber extends Entity {
     }
 
     public void handleCollision() {
-
+if (woop == 1) {
+    woop++;
+}
         if (isMovingHorizontal()) {
             jMap = (int)(Math.round(position.x) / Sprite.SCALED_SIZE);
         }

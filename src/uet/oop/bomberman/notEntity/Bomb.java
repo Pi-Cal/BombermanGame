@@ -111,8 +111,7 @@ public class Bomb {
         unexploded.playContinuously(time, gc);
     }
 
-    public void explode1(long time, GraphicsContext gc) {
-        time -= explodeTime - 10000000;
+    public void explode(long time, GraphicsContext gc) {
         centralFlame.play(time, gc);
         horizontalLeftLastFlame.play(time, gc);
         horizontalRightLastFlame.play(time, gc);
@@ -131,10 +130,9 @@ public class Bomb {
             }
             BombermanGame.map[(int) position.y][(int) position.x] = '0';
             unexplodedAnimation(time, gc);
-
-        }
-        else {
-            explode1(time, gc);
+        } else {
+            time -= explodeTime;
+            explode(time, gc);
             if (centralFlame.isDone()) {
                 isExploded = true;
                 BombermanGame.map[(int) position.y][(int) position.x] = ' ';

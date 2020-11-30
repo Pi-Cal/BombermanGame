@@ -20,7 +20,7 @@ public class Animation {
         this.position = position;
     }
 
-    public Animation(Sprite[] frames, double delay, Vector position) {
+    public Animation(Sprite[] frames, Vector position, double delay) {
         this.frames = frames;
         numFrames = frames.length;
         this.delay = delay;
@@ -58,29 +58,30 @@ public class Animation {
     }
 
     public void playAnimation(long time, GraphicsContext graphicsContext) {
-        double t = time / NANO;
-        graphicsContext.clearRect(position.x  * Sprite.SCALED_SIZE,
+        if (time < 0) return;
+        double t = Math.floor(time / (NANO * delay));
+        graphicsContext.fillRect(position.x  * Sprite.SCALED_SIZE,
                 position.y  * Sprite.SCALED_SIZE,
                 Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
-            for (int i = 0; i < numFrames; i++) {
-                if (t < (i + 1) * delay && t >= i * delay) {
-                    graphicsContext.drawImage(frames[i].getFxImage(),
-                            position.x * Sprite.SCALED_SIZE,
-                            position.y * Sprite.SCALED_SIZE,
-                            Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
-                    return;
-                }
+        for (int i = 0; i < numFrames; i++) {
+            if (t == i) {
+                graphicsContext.drawImage(frames[i].getFxImage(),
+                        position.x * Sprite.SCALED_SIZE,
+                        position.y * Sprite.SCALED_SIZE,
+                        Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
+                return;
             }
-            isDone = true;
+        }
+        isDone = true;
 
     }
 
     public void playContinuously(long time, GraphicsContext graphicsContext) {
-        double t = (time / NANO) % (delay * numFrames);
-        graphicsContext.clearRect(position.x  * Sprite.SCALED_SIZE, position.y  * Sprite.SCALED_SIZE,
-                Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
+        double t = Math.floor(time / (NANO * delay)) % numFrames;
+        graphicsContext.clearRect(position.x  * Sprite.SCALED_SIZE,
+                position.y  * Sprite.SCALED_SIZE, Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
         for (int i = 0; i < numFrames; i++) {
-            if (t < (i + 1) * delay && t >= i * delay) {
+            if (t == i) {
                 graphicsContext.drawImage(frames[i].getFxImage(),
                         position.x * Sprite.SCALED_SIZE, position.y * Sprite.SCALED_SIZE,
                         Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
@@ -89,5 +90,13 @@ public class Animation {
         }
         isDone = true;
 
+    }
+
+    public void playFrame(int frameNumb, GraphicsContext graphicsContext) {
+        graphicsContext.clearRect(position.x * Sprite.SCALED_SIZE, position.y * Sprite.SCALED_SIZE,
+                Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
+        graphicsContext.drawImage(frames[frameNumb].getFxImage(),
+                position.x * Sprite.SCALED_SIZE, position.y * Sprite.SCALED_SIZE,
+                Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
     }
 }

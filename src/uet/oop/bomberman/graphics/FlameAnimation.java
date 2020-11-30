@@ -28,35 +28,6 @@ public class FlameAnimation extends Animation {
         this.bombPosition = bombPosition;
     }
 
-    private void playAnimation1(long time, GraphicsContext graphicsContext) {
-        double t = time / NANO;
-
-        graphicsContext.fillRect(position.x * Sprite.SCALED_SIZE,
-                position.y * Sprite.SCALED_SIZE,
-                Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
-
-        Entity temp = new Brick(position, Sprite.grass.getFxImage());;
-        if (BombermanGame.bomberman.handle_1_Collision(temp)) {
-            BombermanGame.bomberman.setDead(true);
-        }
-
-        for (Enemy enemy : BombermanGame.enemies) {
-            if (enemy.handle_1_Collision(temp)) { enemy.setDead(true); }
-        }
-
-        for (int i = 0; i < numFrames; i++) {
-            if (t < (i + 1) * delay && t >= i * delay) {
-                graphicsContext.drawImage(frames[i].getFxImage(),
-                        position.x * Sprite.SCALED_SIZE,
-                        position.y * Sprite.SCALED_SIZE,
-                        Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
-                return ;
-            }
-        }
-        if (t > delay * numFrames + delay / 3) isDone = true;
-
-    }
-
     public Vector getPosition() {
         return position;
     }
@@ -67,17 +38,19 @@ public class FlameAnimation extends Animation {
     }
 
     public void check() {
-        if (position.y > 0 && position.x > 0) {
-            for (Vector a : Vector.inLine(bombPosition, position)) {
-                if (BombermanGame.map[(int) a.y][(int) a.x] != ' ') {
-                    exist = false;
-                    return;
-                }
+        if (position.x <= 0 && position.y <= 0) {
+            exist = false;
+            return;
+        }
+        for (Vector a : Vector.inLine(bombPosition, position)) {
+            if (BombermanGame.map[(int) a.y][(int) a.x] != ' ') {
+                exist = false;
+                return;
             }
+        }
 
-            if (BombermanGame.map[(int) position.y][(int) position.x] == ' ' || position.equals(bombPosition)) {
-                check = true;
-            }
+        if (BombermanGame.map[(int) position.y][(int) position.x] == ' ' || position.equals(bombPosition)) {
+            check = true;
         }
     }
 
@@ -88,7 +61,15 @@ public class FlameAnimation extends Animation {
         }
         if(exist) {
             if (check) {
-                playAnimation1(time, graphicsContext);
+                Entity temp = new Brick(position, Sprite.grass.getFxImage());
+                if (BombermanGame.bomberman.handle_1_Collision(temp)) {
+                    BombermanGame.bomberman.setDead(true);
+                }
+
+                for (Enemy enemy : BombermanGame.enemies) {
+                    if (enemy.handle_1_Collision(temp)) { enemy.setDead(true); }
+                }
+                playAnimation(time, graphicsContext);
             } else {
                 if (BombermanGame.getBricks().get(position) != null) {
                     Brick a = BombermanGame.getBricks().get(position);
@@ -105,10 +86,7 @@ public class FlameAnimation extends Animation {
                         }
                     }
                 }
-
             }
         }
     }
-
-
 }
