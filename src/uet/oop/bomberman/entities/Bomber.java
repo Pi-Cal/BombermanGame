@@ -29,8 +29,6 @@ public class Bomber extends Entity {
     private ArrayList<Item> speedItems = new ArrayList<>();
     private ArrayList<Item> flameItems = new ArrayList<>();
 
-    public int woop = 0;
-
     public void addBomb(Item b) {
         bombItems.add(b);
     }
@@ -218,9 +216,6 @@ public class Bomber extends Entity {
     }
 
     public void handleCollision() {
-if (woop == 1) {
-    woop++;
-}
         if (isMovingHorizontal()) {
             jMap = (int)(Math.round(position.x) / Sprite.SCALED_SIZE);
         }
