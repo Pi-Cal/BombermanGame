@@ -13,7 +13,7 @@ public class Sound {
 
         File soundFile = null;
         try {
-            soundFile = new File(Sound_cdjv.class.getResource(filename).toURI());
+            soundFile = new File(Sound.class.getResource(filename).toURI());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -72,4 +72,7 @@ public class Sound {
     public static Sound bling = new Sound("/sounds/bling.wav");
     public static Sound player_move = new Sound("/sounds/move.wav");
     public static Sound coin = new Sound("/sounds/coin.wav");
+    public static Sound stage_start = new Sound("/sounds/stage_start.wav");
+    public static Sound stage_complete = new Sound("/sounds/stage_complete.wav");
+
 }

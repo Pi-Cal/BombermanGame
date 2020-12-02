@@ -16,6 +16,7 @@ public class Bomber extends Entity {
     private int step = 0;
     private int iMap;
     private int jMap;
+    private boolean completelyDead = false;
     private Vector lastPosition;
     private boolean dead = false;
     private double speed = 120 * 8;
@@ -66,6 +67,10 @@ public class Bomber extends Entity {
 
     private boolean isMovingHorizontal() {
         return ((int) Math.round(position.x)) % Sprite.SCALED_SIZE != 0;
+    }
+
+    public boolean isCompletelyDead() {
+        return completelyDead;
     }
 
     public Vector velocity = new Vector(0, 0);
@@ -194,9 +199,9 @@ public class Bomber extends Entity {
             position.add(this.getVelocity());
             step++;
 
-            maxBombLength = 2 + flameItems.size();
+            maxBombLength = 1 + flameItems.size();
             maxSpeed = 3 * (speedItems.size() + 1);
-            maxBomb = 10 + bombItems.size();
+            maxBomb = 1 + bombItems.size();
 
         } else {
             deadAnimation();
@@ -263,6 +268,8 @@ public class Bomber extends Entity {
             timeDead++;
         } else {
             this.img = Sprite.player_dead3.getFxImage();
+            timeDead++;
         }
+        if (timeDead > 36) { completelyDead = true; }
     }
 }

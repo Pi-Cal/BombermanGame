@@ -3,13 +3,10 @@ package uet.oop.bomberman.graphics;
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
-import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.entities.Brick;
-import uet.oop.bomberman.entities.Enemy;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.Enemies.EnemyAbs;
 import uet.oop.bomberman.notEntity.Bomb;
-
-import java.util.List;
 
 public class FlameAnimation extends Animation {
     protected Vector bombPosition;
@@ -66,7 +63,7 @@ public class FlameAnimation extends Animation {
                     BombermanGame.bomberman.setDead(true);
                 }
 
-                for (Enemy enemy : BombermanGame.enemies) {
+                for (EnemyAbs enemy : BombermanGame.enemies) {
                     if (enemy.handle_1_Collision(temp)) { enemy.setDead(true); }
                 }
                 playAnimation(time, graphicsContext);
