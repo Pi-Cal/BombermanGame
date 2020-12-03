@@ -4,6 +4,8 @@ import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Sound;
 import uet.oop.bomberman.Character.Vector;
+import uet.oop.bomberman.entities.Brick;
+import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.graphics.Animation;
 import uet.oop.bomberman.graphics.FlameAnimation;
 import uet.oop.bomberman.graphics.Sprite;
@@ -130,7 +132,9 @@ public class Bomb {
             if (time >= explodeTime) {
                 isExploding = true;
             }
-            BombermanGame.map[(int) position.y][(int) position.x] = '0';
+            if (!BombermanGame.bomberman.handle_1_Collision(new Brick(position, Sprite.brick.getFxImage()))) {
+                BombermanGame.map[(int) position.y][(int) position.x] = '0';
+            }
             unexplodedAnimation(time, gc);
         } else {
             time -= explodeTime;

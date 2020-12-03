@@ -8,9 +8,9 @@ import uet.oop.bomberman.BombermanGame;
 
 import java.util.Random;
 
-public class Enemy1 extends EnemyAbs {
+public class Balloom extends EnemyAbs {
 
-    public Enemy1(Vector position, Image img) {
+    public Balloom(Vector position, Image img) {
         super(position, img);
         time = 0;
         lastPosition = new Vector(position.x * Sprite.SCALED_SIZE, position.y * Sprite.SCALED_SIZE);
@@ -23,26 +23,9 @@ public class Enemy1 extends EnemyAbs {
     }
 
     @Override
-    public void update(GraphicsContext gc) {
-        if (!dead) {
-            if (dr[0]) {
-                setLeftAnimation();
-            } else {
-                setRightAnimation();
-            }
-            move();
-        } else {
-            setDeadAnimation();
-        }
-        gc.clearRect(lastPosition.x, lastPosition.y, Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
-        render(gc);
-        lastPosition.setVector(position.x, position.y);
-    }
-
-    @Override
     public void move() {
         handleCollition();
-        position.add(horizontal, vertical);
+        position.add(vel);
         handleCollition();
     }
 
@@ -53,26 +36,22 @@ public class Enemy1 extends EnemyAbs {
             jMap = (int) Math.ceil(position.x / Sprite.SCALED_SIZE);
             iMap = (int) Math.ceil(position.y / Sprite.SCALED_SIZE);
             check = BombermanGame.map[iMap][jMap - 1];
-            horizontal = -4;
-            vertical = 0;
+            vel.setVector(-speed,0);
         } else if (dr[right]){
             jMap = (int)(Math.round(position.x) / Sprite.SCALED_SIZE);
             iMap = (int)(Math.round(position.y) / Sprite.SCALED_SIZE);
             check = BombermanGame.map[iMap][jMap + 1];
-            horizontal = 4;
-            vertical = 0;
+            vel.setVector(speed,0);
         } else if (dr[up]) {
             jMap = (int) Math.ceil(position.x / Sprite.SCALED_SIZE);
             iMap = (int) Math.ceil(position.y / Sprite.SCALED_SIZE);
             check = BombermanGame.map[iMap - 1][jMap];
-            horizontal = 0;
-            vertical = -4;
+            vel.setVector(0,-speed);
         } else {
             jMap = (int)(Math.round(position.x) / Sprite.SCALED_SIZE);
             iMap = (int)(Math.round(position.y) / Sprite.SCALED_SIZE);
             check = BombermanGame.map[iMap + 1][jMap];
-            horizontal = 0;
-            vertical = 4;
+            vel.setVector(0,speed);
         }
         if ( check == '*' || check == '#' || check == '0') {
             for (int i = 0; i < 4; i++) {

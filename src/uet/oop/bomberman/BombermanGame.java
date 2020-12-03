@@ -15,10 +15,8 @@ import uet.oop.bomberman.Character.Sound;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.Character.Couting;
 import uet.oop.bomberman.entities.*;
+import uet.oop.bomberman.entities.Enemies.*;
 import uet.oop.bomberman.entities.Item.*;
-import uet.oop.bomberman.entities.Enemies.Enemy1;
-import uet.oop.bomberman.entities.Enemies.Enemy2;
-import uet.oop.bomberman.entities.Enemies.EnemyAbs;
 import uet.oop.bomberman.graphics.Animation;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.Camera.GameCamera;
@@ -62,6 +60,8 @@ public class BombermanGame extends Application {
 
     public static Bomber bomberman;
     public static List<Bomb> bombs = new ArrayList<>();
+    public static List<Bomb> enemyBombs = new ArrayList<>();
+
     private GameCamera gameCamera = new GameCamera(0, 0);
     private Couting counting = new Couting();
 
@@ -95,6 +95,7 @@ public class BombermanGame extends Application {
                         upLevel = false;
                     }
                 } else if (!gameOver) {
+
                     if (l - lastTime > Animation.NANO / 10 / bomberman.getMaxSpeed() && !bomberman.isDead()) {
                         update();
                         setLastTime(l);
@@ -155,13 +156,23 @@ public class BombermanGame extends Application {
                             bricks.put(new Vector(j, i), brick);
                             break;
                         case '1':
-                            Enemy1 enemy = new Enemy1(new Vector(j, i), Sprite.balloom_left1.getFxImage());
+                            Balloom enemy = new Balloom(new Vector(j, i), Sprite.balloom_left1.getFxImage());
                             enemies.add(enemy);
                             map[i][j] = ' ';
                             break;
                         case '2':
-                            Enemy2 enemy2 = new Enemy2(new Vector(j, i), Sprite.balloom_left1.getFxImage());
+                            Oneal enemy2 = new Oneal(new Vector(j, i), Sprite.oneal_left1.getFxImage());
                             enemies.add(enemy2);
+                            map[i][j] = ' ';
+                            break;
+                        case '3':
+                            Doll enemy3 = new Doll(new Vector(j, i), Sprite.doll_left1.getFxImage());
+                            enemies.add(enemy3);
+                            map[i][j] = ' ';
+                            break;
+                        case '4':
+                            Kondoria enemy4 = new Kondoria(new Vector(j,i), Sprite.kondoria_right1.getFxImage());
+                            enemies.add(enemy4);
                             map[i][j] = ' ';
                             break;
                         case 's':
@@ -215,6 +226,7 @@ public class BombermanGame extends Application {
         walls = new ArrayList<>();
         bricks = new HashMap<>();
         bombs = new ArrayList<>();
+        enemyBombs = new ArrayList<>();
         input = "";
         createMap("levels/Level" + level + ".txt");
         // Tao Canvas
@@ -294,7 +306,6 @@ public class BombermanGame extends Application {
             if (bomberman.handle_1_Collision(items.get(i))) {
                 if (items.get(i) instanceof BombItem) { bomberman.addBomb(items.get(i)); }
                 else if (items.get(i) instanceof FlameItem) { bomberman.addFlame(items.get(i)); }
-
                 else if (items.get(i) instanceof SpeedItem) { bomberman.addSpeed(items.get(i)); }
                 else if (items.get(i) instanceof Portal) {
                     upLevel = true;
@@ -319,22 +330,13 @@ public class BombermanGame extends Application {
 
     public void updateOther(long time) {
         enemies.forEach(g -> g.update(gc));
-        int j = 0;
-        while (j < enemies.size()) {
-            if (enemies.get(j).isCompletelyDead()) {
-                Sound.coin.start();
-                counting.incEnemyKilled();
-                enemies.get(j).clear(gc);
-                enemies.remove(j);
-            } else { j++; }
-        }
+        removeEnemy(enemies);
         bombs.forEach(g -> g.update(time, gc));
-        int i = 0;
-        while (i < bombs.size()) {
-            if (bombs.get(i).isExploded()) {
-                bombs.remove(i);
-            } else { i++; }
-        }
+        removeBomb(bombs);
+
+        enemyBombs.forEach(g -> g.update(time, gc));
+        removeBomb(enemyBombs);
+        bomberman.render(gc);
     }
 
     public void render() {
@@ -362,6 +364,31 @@ public class BombermanGame extends Application {
 
     public static int getEnemiesNeedingKill() {
         return enemiesNeedingKill;
+    }
+
+    private void removeBomb(List<Bomb> bombs) {
+        int i = 0;
+        while (i < bombs.size()) {
+            if (bombs.get(i).isExploded()) {
+                bombs.remove(i);
+            } else { i++; }
+        }
+    }
+
+    private void removeEnemy(List<EnemyAbs> enemies) {
+        int j = 0;
+        while (j < enemies.size()) {
+            EnemyAbs temp = enemies.get(j);
+            if (temp.isCompletelyDead()) {
+                if (temp instanceof Doll) {
+                    enemies.add(new Ghost2(temp.position.toNormal().round(), Sprite.ghost_left1.getFxImage()));
+                }
+                Sound.coin.start();
+                counting.incEnemyKilled();
+                enemies.get(j).clear(gc);
+                enemies.remove(j);
+            } else { j++; }
+        }
     }
 
 

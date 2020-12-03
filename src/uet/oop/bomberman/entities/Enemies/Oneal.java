@@ -3,38 +3,20 @@ package uet.oop.bomberman.entities.Enemies;
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
-import uet.oop.bomberman.entities.Bomber;
 import uet.oop.bomberman.graphics.Sprite;
 import javafx.scene.image.Image;
 
 import java.util.Random;
 
-public class Enemy2 extends EnemyAbs{
+public class Oneal extends EnemyAbs{
 
-    public Enemy2(Vector position, Image img) {
+    public Oneal(Vector position, Image img) {
         super(position, img);
         time = 0;
         lastPosition = new Vector(position.x * Sprite.SCALED_SIZE, position.y * Sprite.SCALED_SIZE);
         setDirect();
     }
 
-
-    @Override
-    public void update(GraphicsContext gc) {
-        if (!dead) {
-            if (dr[0]) {
-                setLeftAnimation();
-            } else {
-                setRightAnimation();
-            }
-            move();
-        } else {
-            setDeadAnimation();
-        }
-        gc.clearRect(lastPosition.x, lastPosition.y, Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
-        render(gc);
-        lastPosition.setVector(position.x, position.y);
-    }
 
     @Override
     public void addImage() {
@@ -54,56 +36,30 @@ public class Enemy2 extends EnemyAbs{
     @Override
     public void move() {
         handleCollition();
-        position.add(horizontal, vertical);
+        position.add(vel);
     }
 
     @Override
     public void handleCollition() {
-        char check = '#';
-        setFalse();
         if (!isMovingHorizontal() && !isMovingVertical()) {
-            int checkDir = find_the_way(BombermanGame.bomberman);
-            System.out.println("D: " + checkDir);
+            setFalse();
+            int checkDir = find_the_way();
             if (checkDir < 5)  {
                 dr[checkDir] = true;
             } else {
-                horizontal = 0;
-                vertical = 0;
+                vel.setVector(0,0);
                 return;
             }
         }
 
-        for (int i = 0; i < 4; i++) System.out.println(dr[i]);
-        System.out.println("");
-
         if (dr[left]) {
-            System.out.println("left");
-            jMap = (int) Math.ceil(position.x / Sprite.SCALED_SIZE);
-            iMap = (int) Math.ceil(position.y / Sprite.SCALED_SIZE);
-            check = BombermanGame.map[iMap][jMap - 1];
-            horizontal = -4;
-            vertical = 0;
+            vel.setVector(-speed,0);
         } else if (dr[right]){
-            System.out.println("right");
-            jMap = (int)(Math.round(position.x) / Sprite.SCALED_SIZE);
-            iMap = (int)(Math.round(position.y) / Sprite.SCALED_SIZE);
-            check = BombermanGame.map[iMap][jMap + 1];
-            horizontal = 4;
-            vertical = 0;
+            vel.setVector(speed,0);
         } else if (dr[up]) {
-            System.out.println("up");
-            jMap = (int) Math.ceil(position.x / Sprite.SCALED_SIZE);
-            iMap = (int) Math.ceil(position.y / Sprite.SCALED_SIZE);
-            check = BombermanGame.map[iMap - 1][jMap];
-            horizontal = 0;
-            vertical = -4;
+            vel.setVector(0,-speed);
         } else if (dr[down]){
-            System.out.println("left");
-            jMap = (int)(Math.round(position.x) / Sprite.SCALED_SIZE);
-            iMap = (int)(Math.round(position.y) / Sprite.SCALED_SIZE);
-            check = BombermanGame.map[iMap + 1][jMap];
-            horizontal = 0;
-            vertical = 4;
+            vel.setVector(0,speed);
         }
     }
 
@@ -112,12 +68,11 @@ public class Enemy2 extends EnemyAbs{
 
     }
 
-    public int find_the_way(Bomber bomber) {
+    public int find_the_way() {
         int u = (int) (position.y / Sprite.SCALED_SIZE);
         int v = (int) (position.x / Sprite.SCALED_SIZE);
-        int m = (int) (bomber.position.y / Sprite.SCALED_SIZE);
-        int n = (int) (bomber.position.x / Sprite.SCALED_SIZE);
-        System.out.println(u + " " + v + " " + m + " " + n);
+        int m = (int) (BombermanGame.bomberman.position.y / Sprite.SCALED_SIZE);
+        int n = (int) (BombermanGame.bomberman.position.x / Sprite.SCALED_SIZE);
 
         int width = BombermanGame.getRealWidth();
         int height = BombermanGame.getRealHeight();
@@ -168,7 +123,6 @@ public class Enemy2 extends EnemyAbs{
             }
             l++;
         }
-        System.out.println(l + " " + r);
         if (r == 0) return 5;
         if (l > r) {
             Random direction = new Random();
@@ -179,16 +133,10 @@ public class Enemy2 extends EnemyAbs{
         }
     }
 
-    private boolean check_Collision(int i, int j) {
+    protected boolean check_Collision(int i, int j) {
         char check = BombermanGame.map[i][j];
         return !(check == '#' || check == '*' || check == '0');
     }
 
-    private boolean isMovingVertical() {
-        return ((int)Math.round(position.y)) % Sprite.SCALED_SIZE != 0;
-    }
 
-    private boolean isMovingHorizontal() {
-        return ((int) Math.round(position.x)) % Sprite.SCALED_SIZE != 0;
-    }
 }

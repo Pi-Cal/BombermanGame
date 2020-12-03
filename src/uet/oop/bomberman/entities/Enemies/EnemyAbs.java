@@ -4,6 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.graphics.Sprite;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,8 +14,8 @@ public abstract class EnemyAbs extends Entity {
     protected int time;
     protected int timeDead = 0;
     protected Vector lastPosition;
-    protected int vertical = 0;
-    protected int horizontal = 0;
+    protected int speed = 2;
+    protected Vector vel;
     protected int iMap;
     protected int jMap;
     protected boolean dr[] = {false, false, false, false};
@@ -27,9 +28,24 @@ public abstract class EnemyAbs extends Entity {
         super(p, img);
         images = new ArrayList<>();
         addImage();
+        vel = new Vector(0,0);
     }
 
-    public abstract void update(GraphicsContext gc);
+    public void update(GraphicsContext gc) {
+        if (!dead) {
+            if (dr[0]) {
+                setLeftAnimation();
+            } else {
+                setRightAnimation();
+            }
+            move();
+        } else {
+            setDeadAnimation();
+        }
+        gc.clearRect(lastPosition.x, lastPosition.y, Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
+        render(gc);
+        lastPosition.setVector(position.x, position.y);
+    }
 
     public void setLeftAnimation() {
         switch (time % 12) {
@@ -101,5 +117,13 @@ public abstract class EnemyAbs extends Entity {
     public abstract void move();
 
     public abstract void handleCollition();
+
+    protected boolean isMovingVertical() {
+        return ((int)Math.round(position.y)) % Sprite.SCALED_SIZE != 0;
+    }
+
+    protected boolean isMovingHorizontal() {
+        return ((int) Math.round(position.x)) % Sprite.SCALED_SIZE != 0;
+    }
 
 }
