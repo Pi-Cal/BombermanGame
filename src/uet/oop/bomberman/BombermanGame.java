@@ -303,7 +303,7 @@ public class BombermanGame extends Application {
 
         int i = 0;
         while (i < items.size()) {
-            if (bomberman.handle_1_Collision(items.get(i))) {
+            if (bomberman.collidedWithItem(items.get(i))) {
                 if (items.get(i) instanceof BombItem) { bomberman.addBomb(items.get(i)); }
                 else if (items.get(i) instanceof FlameItem) { bomberman.addFlame(items.get(i)); }
                 else if (items.get(i) instanceof SpeedItem) { bomberman.addSpeed(items.get(i)); }
@@ -331,11 +331,12 @@ public class BombermanGame extends Application {
     public void updateOther(long time) {
         enemies.forEach(g -> g.update(gc));
         removeEnemy(enemies);
+        items.forEach(g -> g.render(gc));
         bombs.forEach(g -> g.update(time, gc));
         removeBomb(bombs);
-
         enemyBombs.forEach(g -> g.update(time, gc));
         removeBomb(enemyBombs);
+        enemies.forEach(g -> g.render(gc));
         bomberman.render(gc);
     }
 

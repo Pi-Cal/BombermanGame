@@ -1,6 +1,5 @@
 package uet.oop.bomberman.entities;
 
-import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
@@ -56,6 +55,7 @@ public class Brick extends Entity {
             BombermanGame.map[(int) position.y / Sprite.SCALED_SIZE]
                     [(int) position.x / Sprite.SCALED_SIZE] = ' ';
             if (contain != null) {
+                contain.setAppear(true);
                 contain.render(graphicsContext);
             }
         }

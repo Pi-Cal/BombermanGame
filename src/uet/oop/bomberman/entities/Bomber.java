@@ -120,7 +120,7 @@ public class Bomber extends Entity {
                 if (BombermanGame.input.equals("LEFT")) {
                     if (side[left]) {
                         this.velocity.add(-speed, 0);
-                        Sound.player_move.start();
+                        playMoveSound();
                     }
                     switch (step % 3) {
                         case 0:
@@ -136,7 +136,7 @@ public class Bomber extends Entity {
                 if (BombermanGame.input.equals("RIGHT")) {
                     if (side[right]) {
                         this.velocity.add(speed, 0);
-                        Sound.player_move.start();
+                        playMoveSound();
                     }
                     switch (step % 3) {
                         case 0:
@@ -154,7 +154,7 @@ public class Bomber extends Entity {
                 if (BombermanGame.input.equals("UP")) {
                     if (side[up]) {
                         this.velocity.add(0, -speed);
-                        Sound.player_move.start();
+                        playMoveSound();
                     }
                     switch (step % 3) {
                         case 0:
@@ -170,7 +170,7 @@ public class Bomber extends Entity {
                 if (BombermanGame.input.equals("DOWN")) {
                     if (side[down]) {
                         this.velocity.add(0, speed);
-                        Sound.player_move.start();
+                        playMoveSound();
                     }
                     switch (step % 3) {
                         case 0:
@@ -198,11 +198,9 @@ public class Bomber extends Entity {
             velocity.multiply(1.0/120);
             position.add(this.getVelocity());
             step++;
-
             maxBombLength = 1 + flameItems.size();
             maxSpeed = 3 * (speedItems.size() + 1);
             maxBomb = 1 + bombItems.size();
-
         } else {
             deadAnimation();
             Sound.player_dead.start();
@@ -271,5 +269,21 @@ public class Bomber extends Entity {
             timeDead++;
         }
         if (timeDead > 36) { completelyDead = true; }
+    }
+
+    public boolean collidedWithItem(Entity entity) {
+        return  (position.equals(entity.position));
+    }
+
+    public void playMoveSound() {
+        if (step % 2 == 0) {
+            Sound.foot_step_2.stop();
+            Sound.foot_step_2.reset();
+            Sound.foot_step_1.start();
+        } else {
+            Sound.foot_step_1.stop();
+            Sound.foot_step_1.reset();
+            Sound.foot_step_2.start();
+        }
     }
 }

@@ -74,5 +74,7 @@ public class Sound {
     public static Sound coin = new Sound("/sounds/coin.wav");
     public static Sound stage_start = new Sound("/sounds/stage_start.wav");
     public static Sound stage_complete = new Sound("/sounds/stage_complete.wav");
+    public static Sound foot_step_1 = new Sound("/sounds/footstep_1.wav");
+    public static Sound foot_step_2 = new Sound("/sounds/footstep_2.wav");
 
 }
