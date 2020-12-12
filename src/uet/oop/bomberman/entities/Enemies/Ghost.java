@@ -27,11 +27,6 @@ public class Ghost extends Oneal {
     }
 
     @Override
-    public void update() {
-        super.update();
-    }
-
-    @Override
     public int find_the_way() {
         return super.find_the_way();
     }

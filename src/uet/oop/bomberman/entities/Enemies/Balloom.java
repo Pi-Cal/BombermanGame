@@ -17,10 +17,6 @@ public class Balloom extends EnemyAbs {
         setDirect();
     }
 
-    @Override
-    public void update(){
-
-    }
 
     @Override
     public void move() {
@@ -29,9 +25,8 @@ public class Balloom extends EnemyAbs {
         handleCollition();
     }
 
-    @Override
     public void handleCollition() {
-        char check = '#';
+        char check;
         if (dr[left]) {
             jMap = (int) Math.ceil(position.x / Sprite.SCALED_SIZE);
             iMap = (int) Math.ceil(position.y / Sprite.SCALED_SIZE);
@@ -53,7 +48,7 @@ public class Balloom extends EnemyAbs {
             check = BombermanGame.map[iMap + 1][jMap];
             vel.setVector(0,speed);
         }
-        if ( check == '*' || check == '#' || check == '0') {
+        if ( check == '*' || check == '#' || check == '0' || check == '`') {
             for (int i = 0; i < 4; i++) {
                 if (dr[i]) {
                     setFalse();

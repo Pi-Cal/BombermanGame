@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.entities.Item.Item;
+import uet.oop.bomberman.entities.Item.TimeLimitedItem;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.notEntity.Bomb;
 import uet.oop.bomberman.Character.Sound;
@@ -14,27 +15,27 @@ import java.util.ArrayList;
 public class Bomber extends Entity {
 
     private int step = 0;
-    private int iMap;
-    private int jMap;
     private boolean completelyDead = false;
     private Vector lastPosition;
     private boolean dead = false;
     private double speed = 120 * 8;
     private final boolean[] side = {false, false, false, false};
     private final byte left = 0, right = 1, up = 2, down = 3;
+    private final boolean[] halfSide = {false, false, false, false};
+    private final byte upleft = 0, upright = 1, downright = 2, downleft = 3;
     private int timeDead = 0;
     private int maxBomb = 1;
     private int maxSpeed = 3;
     private int maxBombLength = 1;
     private ArrayList<Item> bombItems = new ArrayList<>();
-    private ArrayList<Item> speedItems = new ArrayList<>();
     private ArrayList<Item> flameItems = new ArrayList<>();
+    private ArrayList<TimeLimitedItem> speedItems = new ArrayList<>();
 
     public void addBomb(Item b) {
         bombItems.add(b);
     }
 
-    public void addSpeed(Item s) {
+    public void addSpeed(TimeLimitedItem s) {
         speedItems.add(s);
     }
 
@@ -50,6 +51,7 @@ public class Bomber extends Entity {
     private void setFalse() {
         for (int i = 0; i < 4; i++) {
             side[i] = false;
+            halfSide[i] = false;
         }
     }
 
@@ -90,19 +92,14 @@ public class Bomber extends Entity {
     }
 
 
-    @Override
-    public void update() {}
-
-    public void updateItem() {
-        update1TypeOfItem(bombItems);
-        update1TypeOfItem(flameItems);
+    public void updateTimeLimitedItem() {
         update1TypeOfItem(speedItems);
     }
 
-    public void update1TypeOfItem(ArrayList<Item> arrayList) {
+    public void update1TypeOfItem(ArrayList<TimeLimitedItem> arrayList) {
         int i = 0;
         while (i<arrayList.size()) {
-            Item temp = arrayList.get(i);
+            TimeLimitedItem temp = arrayList.get(i);
             if (temp.getTime() == 0) { arrayList.remove(i); }
             else {
                 temp.decTime();
@@ -114,82 +111,101 @@ public class Bomber extends Entity {
 
     public void update(GraphicsContext gc) {
         if (!dead) {
-            jMap = (int) Math.round(position.x / Sprite.SCALED_SIZE);
-            iMap = (int) Math.round(position.y / Sprite.SCALED_SIZE);
-            if (!(isMovingVertical())) {
-                if (BombermanGame.input.equals("LEFT")) {
-                    if (side[left]) {
-                        this.velocity.add(-speed, 0);
-                        playMoveSound();
-                    }
-                    switch (step % 3) {
-                        case 0:
-                            img = Sprite.player_left.getFxImage();
-                            break;
-                        case 1:
-                            img = Sprite.player_left_1.getFxImage();
-                            break;
-                        default:
-                            img = Sprite.player_left_2.getFxImage();
-                    }
+            if (BombermanGame.input.equals("LEFT")) {
+                if (side[left]) {
+                    this.velocity.add(-speed, 0);
+                    playMoveSound();
+                }  else if (halfSide[downleft]) {
+                    velocity.add(0, speed);
+                    playMoveSound();
+                } else if (halfSide[upleft]) {
+                    velocity.add(0, -speed);
+                    playMoveSound();
                 }
-                if (BombermanGame.input.equals("RIGHT")) {
-                    if (side[right]) {
-                        this.velocity.add(speed, 0);
-                        playMoveSound();
-                    }
-                    switch (step % 3) {
-                        case 0:
-                            img = Sprite.player_right.getFxImage();
-                            break;
-                        case 1:
-                            img = Sprite.player_right_1.getFxImage();
-                            break;
-                        default:
-                            img = Sprite.player_right_2.getFxImage();
-                    }
+                switch (step % 3) {
+                    case 0:
+                        img = Sprite.player_left.getFxImage();
+                        break;
+                    case 1:
+                        img = Sprite.player_left_1.getFxImage();
+                        break;
+                    default:
+                        img = Sprite.player_left_2.getFxImage();
                 }
             }
-            if (!isMovingHorizontal()) {
-                if (BombermanGame.input.equals("UP")) {
-                    if (side[up]) {
-                        this.velocity.add(0, -speed);
-                        playMoveSound();
-                    }
-                    switch (step % 3) {
-                        case 0:
-                            img = Sprite.player_up.getFxImage();
-                            break;
-                        case 1:
-                            img = Sprite.player_up_1.getFxImage();
-                            break;
-                        default:
-                            img = Sprite.player_up_2.getFxImage();
-                    }
+            if (BombermanGame.input.equals("RIGHT")) {
+                if (side[right]) {
+                    this.velocity.add(speed, 0);
+                    playMoveSound();
+                } else if (halfSide[upright]) {
+                    velocity.add(0, -speed);
+                    playMoveSound();
+                } else if (halfSide[downright]) {
+                    velocity.add(0, speed);
+                    playMoveSound();
                 }
-                if (BombermanGame.input.equals("DOWN")) {
-                    if (side[down]) {
-                        this.velocity.add(0, speed);
-                        playMoveSound();
-                    }
-                    switch (step % 3) {
-                        case 0:
-                            img = Sprite.player_down.getFxImage();
-                            break;
-                        case 1:
-                            img = Sprite.player_down_1.getFxImage();
-                            break;
-                        default:
-                            img = Sprite.player_down_2.getFxImage();
-                    }
+                switch (step % 3) {
+                    case 0:
+                        img = Sprite.player_right.getFxImage();
+                        break;
+                    case 1:
+                        img = Sprite.player_right_1.getFxImage();
+                        break;
+                    default:
+                        img = Sprite.player_right_2.getFxImage();
                 }
             }
-            Vector checkPos = position.toNormal();
+            if (BombermanGame.input.equals("UP")) {
+                if (side[up]) {
+                    this.velocity.add(0, -speed);
+                    playMoveSound();
+                } else if (halfSide[upleft]) {
+                    velocity.add(-speed, 0);
+                    playMoveSound();
+                } else if (halfSide[upright]) {
+                    velocity.add(speed, 0);
+                    playMoveSound();
+                }
+                switch (step % 3) {
+                    case 0:
+                        img = Sprite.player_up.getFxImage();
+                        break;
+                    case 1:
+                        img = Sprite.player_up_1.getFxImage();
+                        break;
+                    default:
+                        img = Sprite.player_up_2.getFxImage();
+                }
+            }
+            if (BombermanGame.input.equals("DOWN")) {
+                if (side[down]) {
+                    this.velocity.add(0, speed);
+                    playMoveSound();
+                } else if (halfSide[downleft]) {
+                    velocity.add(-speed, 0);
+                    playMoveSound();
+                } else if (halfSide[downright]) {
+                    velocity.add(speed, 0);
+                    playMoveSound();
+                }
+                switch (step % 3) {
+                    case 0:
+                        img = Sprite.player_down.getFxImage();
+                        break;
+                    case 1:
+                        img = Sprite.player_down_1.getFxImage();
+                        break;
+                    default:
+                        img = Sprite.player_down_2.getFxImage();
+                }
+            }
+            Vector checkPos = position.toNormal().round();
             if (BombermanGame.input.equals("SPACE") &&
-                    BombermanGame.map[(int)checkPos.y][(int) checkPos.x] != '0') {
+                    BombermanGame.map[(int)checkPos.y][(int) checkPos.x] != '`') {
                 if (BombermanGame.bombs.size() < maxBomb) {
-                    BombermanGame.bombs.add(new Bomb(position.toNormal().round(), maxBombLength));
+                    BombermanGame.bombs.add(new Bomb(checkPos, maxBombLength));
                 }
+
             }
 
             if(BombermanGame.input.equals("")) {
@@ -210,6 +226,8 @@ public class Bomber extends Entity {
         }
         clear(gc);
         render(gc);
+
+
     }
 
 
@@ -218,42 +236,81 @@ public class Bomber extends Entity {
         lastPosition.setVector(position.x, position.y);
     }
 
+    private boolean checkMovable (int i, int j) {
+        return (BombermanGame.map[i][j] == ' ' || BombermanGame.map[i][j] == '`');
+    }
     public void handleCollision() {
-        if (isMovingHorizontal()) {
-            jMap = (int)(Math.round(position.x) / Sprite.SCALED_SIZE);
-        }
-
-        if (isMovingVertical()) {
-            iMap = (int)(Math.round(position.y) / Sprite.SCALED_SIZE);
-        }
+        int iMap = (int) (position.y / Sprite.SCALED_SIZE);
+        int jMap = (int) (position.x / Sprite.SCALED_SIZE);
 
         setFalse();
+        if (!isMovingHorizontal()) {
+            if (checkMovable(iMap + 1,jMap)) {
+                side[down] = true;
+            }
+        } else {
+            if (position.x % Sprite.SCALED_SIZE >= 16) {
+                if (checkMovable(iMap - 1,jMap + 1)) {
+                    halfSide[upright] = true;
+                }
+                if (checkMovable(iMap + 1,jMap + 1)) {
+                    halfSide[downright] = true;
+                }
+            }
+        }
 
-        if (BombermanGame.map[iMap][jMap + 1] == ' ') {
-            side[right] = true;
+        if (!isMovingVertical()) {
+            if (checkMovable(iMap,jMap + 1)) {
+                side[right] = true;
+            }
+        } else {
+            if (position.y % Sprite.SCALED_SIZE >= 16) {
+                if (checkMovable(iMap + 1,jMap - 1)) {
+                    halfSide[downleft] = true;
+                }
+                if (checkMovable(iMap + 1,jMap + 1)) {
+                    halfSide[downright] = true;
+                }
+            }
         }
 
 
-
-        if (BombermanGame.map[iMap + 1][jMap] == ' ') {
-            side[down] = true;
-        }
 
         if (isMovingHorizontal()) {
             jMap = (int) (Math.ceil(position.x / Sprite.SCALED_SIZE));
-        }
-        if (isMovingVertical()) {
+            if (position.x % Sprite.SCALED_SIZE <= 16) {
+                if (checkMovable(iMap - 1, jMap - 1)) {
+                    halfSide[upleft] = true;
+                }
+                if (checkMovable(iMap + 1, jMap - 1)) {
+                    halfSide[downleft] = true;
+                }
+            }
+        } else if (isMovingVertical()) {
             iMap = (int) (Math.ceil(position.y / Sprite.SCALED_SIZE));
+            if (position.y % Sprite.SCALED_SIZE <= 16) {
+                if (checkMovable(iMap - 1, jMap - 1)) {
+                    halfSide[upleft] = true;
+                }
+                if (checkMovable(iMap - 1, jMap + 1)) {
+                    halfSide[upright] = true;
+                }
+            }
+        }
+        if (!isMovingHorizontal()) {
+            if (checkMovable(iMap - 1, jMap)) {
+                side[up] = true;
+            }
+        }
+        if (!isMovingVertical()) {
+            if (checkMovable(iMap, jMap - 1)) {
+                side[left] = true;
+            }
         }
 
-        if (BombermanGame.map[iMap - 1][jMap] == ' ') {
-            side[up] = true;
-        }
 
 
-        if (BombermanGame.map[iMap][jMap - 1] == ' ') {
-            side[left] = true;
-        }
+
     }
 
 

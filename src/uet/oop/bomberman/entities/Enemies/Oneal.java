@@ -1,10 +1,9 @@
 package uet.oop.bomberman.entities.Enemies;
 
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.graphics.Sprite;
-import javafx.scene.image.Image;
 
 import java.util.Random;
 
@@ -63,10 +62,6 @@ public class Oneal extends EnemyAbs{
         }
     }
 
-    @Override
-    public void update() {
-
-    }
 
     public int find_the_way() {
         int u = (int) (position.y / Sprite.SCALED_SIZE);
@@ -79,7 +74,7 @@ public class Oneal extends EnemyAbs{
         int[] p = new int[width * height];
         int[] q = new int[width * height];
         int[] d = new int[width * height];
-        boolean check_map[][] = new boolean[height][width];
+        boolean[][] check_map = new boolean[height][width];
         int l = 0;
         int r = 0;
         p[0] = u;
@@ -135,7 +130,7 @@ public class Oneal extends EnemyAbs{
 
     protected boolean check_Collision(int i, int j) {
         char check = BombermanGame.map[i][j];
-        return !(check == '#' || check == '*' || check == '0');
+        return !(check == '#' || check == '*' || check == '0' || check == '`');
     }
 
 

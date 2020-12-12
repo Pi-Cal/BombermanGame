@@ -9,7 +9,4 @@ public class Wall extends Entity {
         super(position, img);
     }
 
-    @Override
-    public void update() {
-    }
 }

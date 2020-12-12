@@ -18,10 +18,4 @@ public class Portal extends Item {
         img = Sprite.portal.getFxImage();
     }
 
-
-    @Override
-    public void update() {
-
-    }
-
 }

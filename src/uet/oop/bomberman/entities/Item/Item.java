@@ -11,26 +11,16 @@ public abstract class Item extends Entity {
 
     public Item() {
         super();
-        time = 15;
     }
 
     public Item(Brick brick) {
         super();
         this.brick = brick;
         position = brick.position;
-        time = 15;
-    }
-
-    public void decTime() {
-        --time;
     }
 
     public int getTime() {
         return time;
-    }
-
-    public boolean isAppear() {
-        return appear;
     }
 
     public void setAppear(boolean appear) {

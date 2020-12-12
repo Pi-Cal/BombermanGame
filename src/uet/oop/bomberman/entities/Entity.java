@@ -76,11 +76,7 @@ public abstract class Entity {
         gc.clearRect(position.x, position.y, Sprite.SCALED_SIZE, Sprite.SCALED_SIZE);
     }
 
-    public abstract void update();
-
-
     public boolean handle_1_Collision(Entity other) {
-        //if (other instanceof Grass) { return false; }
         return Math.round(position.x + width) > Math.round(other.position.x) &&
                 Math.round(position.x) < Math.round(other.position.x + width) &&
                 Math.round(position.y + height) > Math.round(other.position.y) &&

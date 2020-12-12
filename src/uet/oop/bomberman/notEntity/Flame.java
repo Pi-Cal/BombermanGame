@@ -1,4 +1,4 @@
-package uet.oop.bomberman.graphics;
+package uet.oop.bomberman.notEntity;
 
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.BombermanGame;
@@ -6,21 +6,20 @@ import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.entities.Brick;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Enemies.EnemyAbs;
+import uet.oop.bomberman.graphics.Animation;
+import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.notEntity.Bomb;
 
-public class FlameAnimation extends Animation {
-    protected Vector bombPosition;
-    protected boolean check = false;
-    protected boolean exist = true;
-    protected boolean first = true;
-    public FlameAnimation(Sprite[] frames) {
-        this.frames = frames;
-        numFrames = frames.length;
-    }
+public class Flame {
+    private Vector position;
+    private Vector bombPosition;
+    private boolean check = false;
+    private boolean exist = true;
+    private boolean first = true;
+    private Animation ani;
 
-    public FlameAnimation(Sprite[] frames, Vector position, Vector bombPosition) {
-        this.frames = frames;
-        numFrames = frames.length;
+    public Flame(Sprite[] frames, Vector position, Vector bombPosition) {
+        ani = new Animation(frames, position);
         this.position = position;
         this.bombPosition = bombPosition;
     }
@@ -29,13 +28,11 @@ public class FlameAnimation extends Animation {
         return position;
     }
 
-    public void setPosition(Vector position, Vector bombPosition) {
-        this.position = position;
-        this.bombPosition = bombPosition;
+    public boolean isDone() {
+        return ani.isDone();
     }
-
     public void check() {
-        if (position.x <= 0 && position.y <= 0) {
+        if (position.x <= 0 || position.y <= 0) {
             exist = false;
             return;
         }
@@ -51,7 +48,7 @@ public class FlameAnimation extends Animation {
         }
     }
 
-    public void play(long time, GraphicsContext graphicsContext) {
+    public void play(long time, GraphicsContext graphicsContext, long t) {
         if (first) {
             check();
             first = false;
@@ -66,19 +63,21 @@ public class FlameAnimation extends Animation {
                 for (EnemyAbs enemy : BombermanGame.enemies) {
                     if (enemy.handle_1_Collision(temp)) { enemy.setDead(true); }
                 }
-                playAnimation(time, graphicsContext);
+                ani.playAnimation(t, graphicsContext);
             } else {
                 if (BombermanGame.getBricks().get(position) != null) {
                     Brick a = BombermanGame.getBricks().get(position);
                     if (!a.isExploded()) {
                         a.setExplode(true);
+                        BombermanGame.getExplodingBricks().add(a);
+                        a.setExplodeTime(time);
                     }
-                    a.explode(System.nanoTime(), graphicsContext);
                 }
                 for (Bomb b : BombermanGame.bombs) {
                     if (b.getPosition().equals(position) && !b.getPosition().equals(bombPosition)) {
                         if (!b.isExploding()){
                             b.setExploding(true);
+                            b.setExplodeTime(time);
                             return;
                         }
                     }
