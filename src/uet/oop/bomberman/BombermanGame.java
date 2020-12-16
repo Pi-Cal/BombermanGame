@@ -20,7 +20,7 @@ import uet.oop.bomberman.entities.Item.*;
 import uet.oop.bomberman.graphics.Animation;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.Camera.GameCamera;
-import uet.oop.bomberman.notEntity.Bomb;
+import uet.oop.bomberman.Bomb.Bomb;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -77,7 +77,7 @@ public class BombermanGame extends Application {
         stage.setWidth(WIDTH * Sprite.SCALED_SIZE);
         stage.show();
 
-        bomberman = new Bomber(new Vector(1,1), Sprite.player_right.getFxImage());
+//        bomberman = new Bomber(new Vector(1,1), Sprite.player_right.getFxImage());
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -132,78 +132,76 @@ public class BombermanGame extends Application {
     }
 
     public void createMap(Scanner myReader) {
-            for (int i = 0; i < realHeight; i++) {
-                String row = myReader.nextLine();
-                for (int j = 0; j < realWidth; j++) {
-                    map[i][j] = row.charAt(j);
-                    switch (map[i][j]) {
-                        case '#':
-                            Wall wall = new Wall(new Vector(j, i), Sprite.wall.getFxImage());
-                            wall.render(gc);
-                            break;
-                        case '*':
-                            Brick brick = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
-                            bricks.put(new Vector(j, i), brick);
-                            break;
-                        case '1':
-                            Balloom enemy = new Balloom(new Vector(j, i), Sprite.balloom_left1.getFxImage());
-                            enemies.add(enemy);
-                            map[i][j] = ' ';
-                            break;
-                        case '2':
-                            Oneal enemy2 = new Oneal(new Vector(j, i), Sprite.oneal_left1.getFxImage());
-                            enemies.add(enemy2);
-                            map[i][j] = ' ';
-                            break;
-                        case '3':
-                            Doll enemy3 = new Doll(new Vector(j, i), Sprite.doll_left1.getFxImage());
-                            enemies.add(enemy3);
-                            map[i][j] = ' ';
-                            break;
-                        case '4':
-                            Kondoria enemy4 = new Kondoria(new Vector(j,i), Sprite.kondoria_right1.getFxImage());
-                            enemies.add(enemy4);
-                            map[i][j] = ' ';
-                            break;
-                        case 's':
-                            Brick brick1 = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
-                            bricks.put(new Vector(j, i), brick1);
-                            SpeedItem speedItem = new SpeedItem(bricks.get(new Vector(j, i)));
-                            bricks.get(new Vector(j, i)).setContain(speedItem);
-                            items.add(speedItem);
-                            map[i][j] = '*';
-                            break;
-                        case 'b':
-                            Brick brick2 = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
-                            bricks.put(new Vector(j, i), brick2);
-                            BombItem bombItem = new BombItem(bricks.get(new Vector(j, i)));
-                            bricks.get(new Vector(j, i)).setContain(bombItem);
-                            items.add(bombItem);
-                            map[i][j] = '*';
-                            break;
-                        case 'f':
-                            Brick brick3 = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
-                            bricks.put(new Vector(j, i), brick3);
-                            FlameItem flameItem = new FlameItem(bricks.get(new Vector(j, i)));
-                            bricks.get(new Vector(j, i)).setContain(flameItem);
-                            items.add(flameItem);
-                            map[i][j] = '*';
-                            break;
-                        case '5':
-                            Brick brick4 = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
-                            bricks.put(new Vector(j, i), brick4);
-                            Portal portal = new Portal(bricks.get(new Vector(j, i)));
-                            bricks.get(new Vector(j, i)).setContain(portal);
-                            items.add(portal);
-                            map[i][j] = '*';
-                            break;
-                        default:
-                            //Grass grass = new Grass(new Vector(j, i), Sprite.grass.getFxImage());
-                            //stillObjects.put(grass.getPosition(), grass);
-                    }
+        for (int i = 0; i < realHeight; i++) {
+            String row = myReader.nextLine();
+            for (int j = 0; j < realWidth; j++) {
+                map[i][j] = row.charAt(j);
+                switch (map[i][j]) {
+                    case '#':
+                        Wall wall = new Wall(new Vector(j, i), Sprite.wall.getFxImage());
+                        wall.render(gc);
+                        break;
+                    case '*':
+                        Brick brick = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
+                        bricks.put(new Vector(j, i), brick);
+                        break;
+                    case '1':
+                        Balloom enemy = new Balloom(new Vector(j, i), Sprite.balloom_left1.getFxImage());
+                        enemies.add(enemy);
+                        map[i][j] = ' ';
+                        break;
+                    case '2':
+                        Oneal enemy2 = new Oneal(new Vector(j, i), Sprite.oneal_left1.getFxImage());
+                        enemies.add(enemy2);
+                        map[i][j] = ' ';
+                        break;
+                    case '3':
+                        Doll enemy3 = new Doll(new Vector(j, i), Sprite.doll_left1.getFxImage());
+                        enemies.add(enemy3);
+                        map[i][j] = ' ';
+                        break;
+                    case '4':
+                        Kondoria enemy4 = new Kondoria(new Vector(j,i), Sprite.kondoria_right1.getFxImage());
+                        enemies.add(enemy4);
+                        map[i][j] = ' ';
+                        break;
+                    case 's':
+                        Brick brick1 = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
+                        bricks.put(new Vector(j, i), brick1);
+                        SpeedItem speedItem = new SpeedItem(bricks.get(new Vector(j, i)));
+                        bricks.get(new Vector(j, i)).setContain(speedItem);
+                        items.add(speedItem);
+                        map[i][j] = '*';
+                        break;
+                    case 'b':
+                        Brick brick2 = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
+                        bricks.put(new Vector(j, i), brick2);
+                        BombItem bombItem = new BombItem(bricks.get(new Vector(j, i)));
+                        bricks.get(new Vector(j, i)).setContain(bombItem);
+                        items.add(bombItem);
+                        map[i][j] = '*';
+                        break;
+                    case 'f':
+                        Brick brick3 = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
+                        bricks.put(new Vector(j, i), brick3);
+                        FlameItem flameItem = new FlameItem(bricks.get(new Vector(j, i)));
+                        bricks.get(new Vector(j, i)).setContain(flameItem);
+                        items.add(flameItem);
+                        map[i][j] = '*';
+                        break;
+                    case '5':
+                        Brick brick4 = new Brick(new Vector(j, i), Sprite.brick.getFxImage());
+                        bricks.put(new Vector(j, i), brick4);
+                        Portal portal = new Portal(bricks.get(new Vector(j, i)));
+                        bricks.get(new Vector(j, i)).setContain(portal);
+                        items.add(portal);
+                        map[i][j] = '*';
+                        break;
+                    default:
                 }
             }
-            myReader.close();
+        }
+        myReader.close();
     }
 
     public Scene makeLevelScene(int level) {
@@ -214,7 +212,7 @@ public class BombermanGame extends Application {
         bombs = new ArrayList<>();
         enemyBombs = new ArrayList<>();
         input = "";
-        String filePath = "levels/Level" + level + ".txt";
+        String filePath = "levels/Level" + (1 + (level - 1) % 3) + ".txt";
         try {
             ClassLoader cl = getClass().getClassLoader();
             File myObj = new File(Objects.requireNonNull(cl.getResource(filePath)).getFile());
@@ -264,9 +262,13 @@ public class BombermanGame extends Application {
 
             Sound.stage_theme.start();
             Sound.stage_theme.setLoop(2);
-
-
-            bomberman = new Bomber(new Vector(1,1), Sprite.player_right.getFxImage());
+            int maxBomb = 1;
+            int flameLength = 1;
+            if (bomberman != null) {
+                maxBomb = bomberman.getMaxBomb();
+                flameLength = bomberman.getMaxBombLength();
+            }
+            bomberman = new Bomber(new Vector(1,1), Sprite.player_right.getFxImage(), flameLength, maxBomb);
             gameCamera = new GameCamera(0, 0);
             render();
             return scene;

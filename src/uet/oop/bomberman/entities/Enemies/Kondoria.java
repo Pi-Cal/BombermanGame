@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.graphics.Sprite;
-import uet.oop.bomberman.notEntity.Bomb;
+import uet.oop.bomberman.Bomb.Bomb;
 
 import java.util.Random;
 

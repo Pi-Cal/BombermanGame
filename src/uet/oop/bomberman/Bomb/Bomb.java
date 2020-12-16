@@ -1,4 +1,4 @@
-package uet.oop.bomberman.notEntity;
+package uet.oop.bomberman.Bomb;
 
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.BombermanGame;

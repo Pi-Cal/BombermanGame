@@ -1,4 +1,4 @@
-package uet.oop.bomberman.notEntity;
+package uet.oop.bomberman.Bomb;
 
 import javafx.scene.canvas.GraphicsContext;
 import uet.oop.bomberman.BombermanGame;
@@ -8,7 +8,6 @@ import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Enemies.EnemyAbs;
 import uet.oop.bomberman.graphics.Animation;
 import uet.oop.bomberman.graphics.Sprite;
-import uet.oop.bomberman.notEntity.Bomb;
 
 public class Flame {
     private Vector position;

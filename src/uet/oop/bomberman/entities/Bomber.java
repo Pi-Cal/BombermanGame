@@ -7,7 +7,7 @@ import uet.oop.bomberman.Character.Vector;
 import uet.oop.bomberman.entities.Item.Item;
 import uet.oop.bomberman.entities.Item.TimeLimitedItem;
 import uet.oop.bomberman.graphics.Sprite;
-import uet.oop.bomberman.notEntity.Bomb;
+import uet.oop.bomberman.Bomb.Bomb;
 import uet.oop.bomberman.Character.Sound;
 
 import java.util.ArrayList;
@@ -18,7 +18,6 @@ public class Bomber extends Entity {
     private boolean completelyDead = false;
     private Vector lastPosition;
     private boolean dead = false;
-    private double speed = 120 * 8;
     private final boolean[] side = {false, false, false, false};
     private final byte left = 0, right = 1, up = 2, down = 3;
     private final boolean[] halfSide = {false, false, false, false};
@@ -27,12 +26,11 @@ public class Bomber extends Entity {
     private int maxBomb = 1;
     private int maxSpeed = 3;
     private int maxBombLength = 1;
-    private ArrayList<Item> bombItems = new ArrayList<>();
-    private ArrayList<Item> flameItems = new ArrayList<>();
+
     private ArrayList<TimeLimitedItem> speedItems = new ArrayList<>();
 
     public void addBomb(Item b) {
-        bombItems.add(b);
+        maxBomb++;
     }
 
     public void addSpeed(TimeLimitedItem s) {
@@ -40,7 +38,7 @@ public class Bomber extends Entity {
     }
 
     public void addFlame(Item f) {
-        flameItems.add(f);
+        maxBombLength++;
     }
 
     public int getMaxSpeed() {
@@ -63,6 +61,14 @@ public class Bomber extends Entity {
         this.dead = dead;
     }
 
+    public int getMaxBomb() {
+        return maxBomb;
+    }
+
+    public int getMaxBombLength() {
+        return maxBombLength;
+    }
+
     private boolean isMovingVertical() {
         return ((int)Math.round(position.y)) % Sprite.SCALED_SIZE != 0;
     }
@@ -79,6 +85,13 @@ public class Bomber extends Entity {
 
     public Bomber(Vector position, Image img) {
         super(position, img);
+        lastPosition = new Vector(position.x * Sprite.SCALED_SIZE, position.y * Sprite.SCALED_SIZE);
+    }
+
+    public Bomber(Vector position, Image img, int flameLength, int maxBomb) {
+        super(position, img);
+        maxBombLength = flameLength;
+        this.maxBomb = maxBomb;
         lastPosition = new Vector(position.x * Sprite.SCALED_SIZE, position.y * Sprite.SCALED_SIZE);
     }
 
@@ -111,6 +124,7 @@ public class Bomber extends Entity {
 
     public void update(GraphicsContext gc) {
         if (!dead) {
+            double speed = 120 * 8;
             if (BombermanGame.input.equals("LEFT")) {
                 if (side[left]) {
                     this.velocity.add(-speed, 0);
@@ -214,9 +228,9 @@ public class Bomber extends Entity {
             velocity.multiply(1.0/120);
             position.add(this.getVelocity());
             step++;
-            maxBombLength = 1 + flameItems.size();
+            //maxBombLength = 1 + flameItems;
             maxSpeed = 3 * (speedItems.size() + 1);
-            maxBomb = 1 + bombItems.size();
+            //maxBomb = 1 + bombItems;
         } else {
             deadAnimation();
             Sound.player_dead.start();
